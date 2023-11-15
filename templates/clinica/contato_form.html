@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar_cadastro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'contato/contato.css' %}">
+</head>
+<body>     
+    
+    <nav class="navbar" style="background-color: #417690;">
+        <div class="container">
+          <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Cadastro de Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
+        </div>
+    </nav>
+
+
+    <main class="container mt-5 card">
+        <h3>Cadastrar</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label>Nome:</label>
+                {{ form.nome }}
+                {{ form.nome.errors }}
+            </div>
+        
+            <div class="form-group mb-3">
+                <label>Email:</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>            
+            <button class="btn btn-primary mb-3">Enviar</button>
+        </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
