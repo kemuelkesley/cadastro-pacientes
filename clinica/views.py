@@ -6,33 +6,47 @@ from .models import Contato
 from django.core.paginator import Paginator
 
 from django.views.generic import ListView, UpdateView
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.db.models import Q
 
-# Create your views here.
+
+# usado para criar pesquisa na pagina
+def buscar_contatos(nome):
+    if nome:
+        return Contato.objects.filter(Q(nome__icontains=nome) | Q(email__icontains=nome))
+    
+    else:        
+        return Contato.objects.all()
+    
+
+def criar_paginacao(request, objeto):
+    paginator = Paginator(objeto, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return page_obj
+
 
 
 class ClinicaListView(ListView):
     model = Contato
     template_name = 'clinica/clinica_list.html'
-    context_object_name = 'clinica_list'
-    paginate_by = 10  
+    context_object_name = 'clinica_list'      
 
+       
     def get_queryset(self):
-        return Contato.objects.all().order_by('id')
+        nome = self.request.GET.get('nome', None)
+        return buscar_contatos(nome)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Configuração do Paginator
-        lista_paginator = Paginator(context['clinica_list'], self.paginate_by)
-        page_num = self.request.GET.get('page')
-        page = lista_paginator.get_page(page_num)
-        
-        context['clinica_list'] = page
-        context['lista_paginator'] = lista_paginator
-
+        objeto = self.get_queryset()
+        page_obj = criar_paginacao(self.request, objeto)
+        context['page_obj'] = page_obj
+        context['criar_paginacao'] = criar_paginacao(self.request, Contato.objects.all())  # Use uma consulta diferente para a paginação
         return context
+
+
     
 
 class ClinicaUpdateView(UpdateView):
@@ -48,6 +62,11 @@ class ClinicaUpdateView(UpdateView):
         return form
    
 
+    
+    def get_success_url(self):
+        return reverse_lazy('clinica_list')
+
+
 # def cadastro(request):
 #     if request.method == 'POST':
 #         form = ContatoForm(request.POST)
@@ -60,7 +79,9 @@ class ClinicaUpdateView(UpdateView):
 #     return render(request, 'clinica/contato_form.html', {'form': form})
 
 
-from django.urls import reverse
+
+
+
 
 def cadastro(request):
     if request.method == 'POST':
