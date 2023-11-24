@@ -47,11 +47,9 @@ class ClinicaListView(ListView):
         return context
 
 
-    
-
 class ClinicaUpdateView(UpdateView):
     model = Contato
-    fields = ['nome', 'email']       
+    fields = ['nome', 'email', 'data_nascimento', 'celular']       
     success_url = reverse_lazy('clinica_list')
     template_name = 'clinica/contato_form.html'
     
@@ -59,6 +57,8 @@ class ClinicaUpdateView(UpdateView):
         form = super().get_form(form_class)
         form.fields['nome'].widget.attrs['class'] = 'form-control'
         form.fields['email'].widget.attrs['class'] = 'form-control'
+        form.fields['data_nascimento'].widget.attrs['class'] = 'form-control'
+        form.fields['celular'].widget.attrs['class'] = 'form-control'
         return form
    
 
