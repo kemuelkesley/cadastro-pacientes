@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar_cadastro</title>
+    <title>Editar_cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     
@@ -13,13 +13,13 @@
     
     <nav class="navbar" style="background-color: #417690;">
         <div class="container">
-          <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Cadastro de Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
+          <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Editar Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
         </div>
     </nav>
 
 
     <main class="container mt-5 card">
-        <h3>Cadastrar</h3>
+        <h3>Editar Cadastro</h3>
         <form method="POST">
             {% csrf_token %}
             <div class="row">
@@ -36,12 +36,12 @@
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="data_nascimento">Data de Nascimento:</label>
+                    <label for="id_data_nascimento">Data de Nascimento:</label>
                     {{ form.data_nascimento }}
                     {{ form.data_nascimento.errors }}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="celular">Celular:</label>
+                    <label for="id_celular">Celular:</label>
                     {{ form.celular }}
                     {{ form.celular.errors }}
                 </div>
@@ -51,10 +51,24 @@
     </main>
     
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <!--for activate mask for fields-->
+    
+    
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+
+
+    <script>
+
+        $(document).ready(function(){
+            $('#id_data_nascimento').mask('00/00/0000');
+        });
+
+        $(document).ready(function(){
+            $('#id_celular').mask('(00) 00000-0000');
+        });
+
+    
+    </script>
 </body>
 </html>

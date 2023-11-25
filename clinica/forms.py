@@ -2,7 +2,7 @@ from django import forms
 from clinica.models import Contato
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
-#from input_mask.widgets import InputMask
+
 
 
 
@@ -24,20 +24,25 @@ class ContatoForm(forms.ModelForm):
     )    
 
     data_nascimento = forms.DateField(
-        label='Data Nascimento', 
-        required=True,   
-        help_text='Formato: DD/MM/AAAA',
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),          
+        label='Data de Nascimento', 
+        required=True,  
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type' : 'data',
+            'data-mask' : "00/00/0000",
+            'placeholder' : 'dd/mm/aaaa'
+        }),          
     )
 
-    celular = PhoneNumberField(
-        region='BR',
+
+
+    celular = forms.CharField(
         label='Celular', 
-        max_length=14, 
+        max_length=15, 
         required=True,   
         error_messages={"required": "Digite seu número de celular"},
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(82) 99999-9999'}),           
-    )   
+        widget=forms.TextInput(attrs={'class': 'form-control', 'data-mask':"(00) 00000-0000", 'placeholder': '(00) 0000-0000'}),
+    )
 
 
 

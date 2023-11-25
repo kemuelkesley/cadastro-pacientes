@@ -50,8 +50,8 @@ class ClinicaListView(ListView):
 class ClinicaUpdateView(UpdateView):
     model = Contato
     fields = ['nome', 'email', 'data_nascimento', 'celular']       
-    success_url = reverse_lazy('clinica_list')
-    template_name = 'clinica/contato_form.html'
+    #success_url = reverse_lazy('clinica_list')
+    template_name = 'clinica/editar_contato.html'
     
     def get_form(self, form_class=None):
         form = super().get_form(form_class)

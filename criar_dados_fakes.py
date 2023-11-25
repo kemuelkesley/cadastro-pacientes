@@ -9,7 +9,7 @@
 
 # fake = Faker('pt_BR')
 
-# def populate_data(n=100):
+# def populate_data(n=20):
 #     for _ in range(n):
 #         nome = fake.name()
 #         email = fake.email()
@@ -21,6 +21,6 @@
 
 # if __name__ == '__main__':
 #     print('Populando a base de dados...')
-#     populate_data(100)
+#     populate_data(20)
 #     print('Populado com sucesso!')
 
