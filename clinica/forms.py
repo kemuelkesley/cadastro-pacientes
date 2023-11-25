@@ -40,13 +40,18 @@ class ContatoForm(forms.ModelForm):
         label='Celular', 
         max_length=15, 
         required=True,   
-        error_messages={"required": "Digite seu número de celular"},
-        widget=forms.TextInput(attrs={'class': 'form-control', 'data-mask':"(00) 00000-0000", 'placeholder': '(00) 0000-0000'}),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'data-mask':"(00) 00000-0000", 
+            'placeholder': '(00) 0000-0000'
+        }),
     )
-
-
+   
 
     class Meta:
         model = Contato
         fields = ['nome', 'email', 'data_nascimento', 'celular']
-        
+
+
+    
+    
