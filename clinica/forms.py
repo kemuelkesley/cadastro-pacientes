@@ -13,7 +13,11 @@ class ContatoForm(forms.ModelForm):
         max_length=50,
         required=True,   
         error_messages={"required": "Por favor entre com o seu nome"},
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu nome'}),          
+        widget=forms.TextInput(attrs={
+            'class': 'form-control', 
+            'placeholder': 'Digite seu nome',
+            'autofocus': True,
+        }),          
     )
         
     email = forms.EmailField(
