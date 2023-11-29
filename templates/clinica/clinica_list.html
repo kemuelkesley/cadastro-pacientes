@@ -1,7 +1,5 @@
 {% load static %}
 
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -14,13 +12,14 @@
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="{% static 'assets/css/paginator.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">
 </head>
 <body>
 
 
-    <nav class="navbar" style="background-color: #417690;">
+    <nav class="navbar" style="background-color: #063115;">
         <div class="container">
-            <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;"><i class="bi bi-hospital-fill"></i> Cadastro de Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
+            <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;"><i class="bi bi-hospital-fill"></i> Clinica Vida <span style="font-size: 12px;">ver-1.0</span></a>
             
             <form class="d-flex" role="search">
                 <input class="form-control me-2" name="nome" type="search" placeholder="Buscar paciente" aria-label="Search">
@@ -29,7 +28,7 @@
         </div>
     </nav>
 
-    <main class="container mt-5 card">
+    <main class="container mt-5  contorno_table">
         <h3 class="text-center mt-3">Pacientes</h3>
         <section class="container mt-2">
             <a class="btn btn-outline-success mb-3" href="{% url 'contato_form' %}"><i class="bi bi-person-plus-fill"></i> Cadastrar paciente</a>
