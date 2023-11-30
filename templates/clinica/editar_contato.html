@@ -13,10 +13,15 @@
 
     <script src="{% static 'js/mascaras.js' %}"></script>
     <script src="{% static 'js/botao-finalizar-modal.js' %}"></script>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
+    
 </head>
 <body>     
     
-    <nav class="navbar" style="background-color: #417690;">
+    <nav class="navbar" style="background-color: #063115;">
         <div class="container">
           <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Editar Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
         </div>
@@ -45,9 +50,9 @@
     </section>
   
 
-    <main class="container mt-5 card">       
-        <h3>Editar Cadastro</h3>
-        <form method="POST">
+    <main class="container mt-5 contorno_table">       
+        <h3 class="mt-3">Editar Cadastro</h3>
+        <form class="mt-3" method="POST">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -74,7 +79,7 @@
                 </div>
             </div>
                        
-            <button type="button" class="btn btn-primary mb-3 finalizar-botao" data-bs-toggle="modal" data-bs-target="#confirmModal">
+            <button type="button" class="btn btn-outline-success mb-3 finalizar-botao" data-bs-toggle="modal" data-bs-target="#confirmModal">
                 Finalizar
             </button>
         </form>

@@ -14,7 +14,7 @@ class ContatoForm(forms.ModelForm):
         required=True,   
         error_messages={"required": "Por favor entre com o seu nome"},
         widget=forms.TextInput(attrs={
-            'class': 'form-control', 
+            'class': 'form-control custom-input', 
             'placeholder': 'Digite seu nome',
             'autofocus': True,
         }),          
@@ -24,14 +24,14 @@ class ContatoForm(forms.ModelForm):
         label='Email', 
         max_length=50,
         required=True,  
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Insira seu email'}),            
+        widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira seu email'}),            
     )    
 
     data_nascimento = forms.DateField(
         label='Data de Nascimento', 
         required=True,  
         widget=forms.DateInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control custom-input',
             'type' : 'data',
             'data-mask' : "00/00/0000",
             'placeholder' : 'dd/mm/aaaa'
@@ -45,7 +45,7 @@ class ContatoForm(forms.ModelForm):
         max_length=15, 
         required=True,   
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control custom-input',
             'data-mask':"(00) 00000-0000", 
             'placeholder': '(00) 0000-0000'
         }),

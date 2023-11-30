@@ -57,10 +57,10 @@ class ClinicaUpdateView(UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['nome'].widget.attrs['class'] = 'form-control'
-        form.fields['email'].widget.attrs['class'] = 'form-control'
-        form.fields['data_nascimento'].widget.attrs['class'] = 'form-control'
-        form.fields['celular'].widget.attrs['class'] = 'form-control'
+        form.fields['nome'].widget.attrs['class'] = 'form-control custom-input'
+        form.fields['email'].widget.attrs['class'] = 'form-control custom-input'
+        form.fields['data_nascimento'].widget.attrs['class'] = 'form-control custom-input'
+        form.fields['celular'].widget.attrs['class'] = 'form-control custom-input'
         return form
    
 

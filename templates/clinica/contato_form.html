@@ -12,20 +12,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 
     <script src="{% static 'js/mascaras.js' %}"></script>
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
     
 </head>
 <body>     
     
-    <nav class="navbar" style="background-color: #417690;">
+    <nav class="navbar" style="background-color: #063115;">
         <div class="container">
           <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Cadastro de Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
         </div>
     </nav>
 
 
-    <main class="container mt-5 card">
-        <h3>Cadastrar</h3>
-        <form method="POST">
+    <main class="container mt-5 contorno_table">
+        <h3 class="mt-3">Cadastrar</h3>
+        <form class="mt-3" method="POST">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -51,7 +54,7 @@
                     {{ form.celular.errors }}
                 </div>
             </div>
-            <button class="btn btn-primary mb-3">Enviar</button>
+            <button class="btn btn-outline-success mb-3">Enviar</button>
         </form>
     </main>
 
