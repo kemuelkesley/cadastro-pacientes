@@ -1,4 +1,5 @@
 from urllib import request
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from .forms import ContatoForm
@@ -69,6 +70,22 @@ class ClinicaUpdateView(UpdateView):
         return reverse_lazy('clinica_list')
 
 
+# def deletar_contato(request, pk):
+#     contato = get_object_or_404(Contato, pk=pk)
+#     contato.delete()
+#     return redirect('clinica_list')s
+def deletar_contato(request, pk):
+    if request.method == 'GET':
+        contato = get_object_or_404(Contato, pk=pk)
+        return render(request, 'clinica/confirmar_exclusao_contato.html', {'contato': contato})
+
+    elif request.method == 'POST':
+        contato = get_object_or_404(Contato, pk=pk)
+        contato.delete()
+        return redirect('clinica_list')
+
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 
