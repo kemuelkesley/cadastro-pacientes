@@ -102,8 +102,9 @@ def deletar_contato(request, pk):
 
     elif request.method == 'POST':
         # Atualize o campo 'ativo' para False em vez de excluir o contato
-        contato.ativo = False
-        contato.save()
+        #contato.ativo = False
+        #contato.save()
+        contato.marcar_como_inativo(request.user)
         return redirect('clinica_list')
 
     else:
@@ -117,7 +118,7 @@ def cadastro(request):
         if form.is_valid():
             form.save()
             novo_contato = form.save(commit=False)  # Evita salvar no banco antes de associar o objeto
-            novo_contato.save()  # Agora salva o objeto
+            novo_contato.save() 
             return redirect(reverse('sucesso'))
     else:
         form = ContatoForm()

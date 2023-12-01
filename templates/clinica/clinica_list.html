@@ -43,7 +43,7 @@
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col">#</th>
+                            <!-- <th scope="col">#</th> -->
                             <th scope="col">Nome</th>
                             <th scope="col">E-mail</th>
                             <th scope="col">Data de Nascimento</th>
@@ -56,7 +56,7 @@
                         {% for contato in page_obj  %}
                             <tr>
                                 <!-- <td>{{ forloop.counter }}</td> -->
-                                <td scope="row">{{contato.pk}}</td>
+                                <!-- <td scope="row">{{contato.pk}}</td> -->
                                 <td>{{contato.nome}}</td>
                                 <td>{{contato.email}}</td>
                                 <td>{{contato.data_nascimento | date:"d/m/Y"}}</td>
