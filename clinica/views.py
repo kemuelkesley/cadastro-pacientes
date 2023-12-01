@@ -69,19 +69,6 @@ class ClinicaUpdateView(UpdateView):
         return reverse_lazy('clinica_list')
 
 
-# def cadastro(request):
-#     if request.method == 'POST':
-#         form = ContatoForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('sucesso')  
-#     else:
-#         form = ContatoForm()
-
-#     return render(request, 'clinica/contato_form.html', {'form': form})
-
-
-
 
 
 

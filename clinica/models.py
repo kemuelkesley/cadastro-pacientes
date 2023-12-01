@@ -17,10 +17,3 @@ class Contato(models.Model):
     def __str__(self):
         return self.nome
     
-    # def formatar_celular(self):
-    #     try:
-    #         parsed_numero = phonenumbers.parse(self.celular, "BR")
-    #         return phonenumbers.format_number(parsed_numero, phonenumbers.PhoneNumberFormat.NATIONAL)
-    #     except phonenumbers.NumberFormatException:
-    #         return self.celular
-

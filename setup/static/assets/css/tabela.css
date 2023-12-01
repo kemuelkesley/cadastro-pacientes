@@ -1,5 +1,6 @@
 .contorno_table {
-    border-color: #1ebc55;
+    /* border-color: #1ebc55; */
+    border-color: #228b47;
     border-style: solid;
     border-width: 2px;
     border-radius: 15px;
