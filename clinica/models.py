@@ -15,7 +15,7 @@ class Contato(models.Model):
     celular = PhoneNumberField(region='BR')  # Defina a região como Brasil
 
     ativo = models.BooleanField(default=True)
-    data_exclusao = models.DateField(null=True, blank=True)
+    data_exclusao = models.DateTimeField(null=True, blank=True)
     usuario_exclusao = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
