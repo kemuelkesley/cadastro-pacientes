@@ -37,7 +37,8 @@ class ClinicaListView(ListView):
        
     def get_queryset(self):
         nome = self.request.GET.get('nome', None)
-        return buscar_contatos(nome)
+        return buscar_contatos(nome).filter(ativo=True)
+        #return buscar_contatos(nome)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,15 +74,36 @@ class ClinicaUpdateView(UpdateView):
 # def deletar_contato(request, pk):
 #     contato = get_object_or_404(Contato, pk=pk)
 #     contato.delete()
-#     return redirect('clinica_list')s
+#     return redirect('clinica_list')
+
+
+# Metodo funcionando apagando direto do banco de dados
+# def deletar_contato(request, pk):
+#     if request.method == 'GET':
+#         contato = get_object_or_404(Contato, pk=pk)
+#         return render(request, 'clinica/confirmar_exclusao_contato.html', {'contato': contato})
+
+#     elif request.method == 'POST':
+#         contato = get_object_or_404(Contato, pk=pk)
+#         contato.delete()
+#         return redirect('clinica_list')
+
+#     else:
+#         return HttpResponseNotAllowed(['POST'])
+
+
+
+# Metodo que faz uma exclusao logica ou seja não apaga do banco e deixa o paciente inativo.
 def deletar_contato(request, pk):
+    contato = get_object_or_404(Contato, pk=pk)
+
     if request.method == 'GET':
-        contato = get_object_or_404(Contato, pk=pk)
         return render(request, 'clinica/confirmar_exclusao_contato.html', {'contato': contato})
 
     elif request.method == 'POST':
-        contato = get_object_or_404(Contato, pk=pk)
-        contato.delete()
+        # Atualize o campo 'ativo' para False em vez de excluir o contato
+        contato.ativo = False
+        contato.save()
         return redirect('clinica_list')
 
     else:

@@ -28,17 +28,16 @@
     <div class="container  mt-5">
         <h2>Confirmar Exclusão</h2>
         <p>Tem certeza de que deseja excluir este paciente?</p>
-        
         <form method="POST" action="{% url 'deletar_contato' contato.pk %}">
             {% csrf_token %}
-              
+            
             <ul class="list-group list-group-flush custom-list">
                 <li class="list-group-item"><strong>Nome:</strong> {{ contato.nome }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ contato.email }}</li>
                 <li class="list-group-item"><strong>Data de Nascimento:</strong> {{ contato.data_nascimento | date:"d/m/Y" }}</li>
                 <li class="list-group-item"><strong>Celular:</strong> {{ contato.celular  }}</li>
             </ul>
-
+        
             <div class="mt-3">
                 <button type="submit" class="btn btn-outline-danger">Apagar</button>
                 <a href="{% url 'clinica_list' %}" class="btn btn-outline-secondary">Cancelar</a>

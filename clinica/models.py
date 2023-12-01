@@ -12,6 +12,7 @@ class Contato(models.Model):
     data_nascimento = models.DateField()
     celular = PhoneNumberField(region='BR')  # Defina a região como Brasil
 
+    ativo = models.BooleanField(default=True)
     
 
     def __str__(self):
