@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,6 +14,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/buttons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/fontes.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">
 </head>
 <body>
 
@@ -30,16 +30,18 @@
         </div>
     </nav>
 
-    <main class="container mt-5  contorno_table">
-        <h3 class="text-center mt-3">Pacientes</h3>
+    <main class="container mt-3  contorno_table">
+        <h3 class="text-center mt-1">Pacientes</h3>
         <section class="container mt-2">
             <a class="btn btn-outline-success mb-3" href="{% url 'contato_form' %}"><i class="bi bi-person-plus-fill"></i> Cadastrar paciente</a>
-            {% if message %}
-                <div class="alert alert-info" role="alert">
-                    {{ message }}
-                </div>
-            {% else %}
 
+                {% for msg in messages %}
+                    <div class="alert {% if 'excluído' in msg.tags %}alert-danger{% else %}alert-success{% endif %} largura_messages" role="alert">
+                        <p class="tamanho_fonte">{{ msg | safe }}</p>
+                    </div>
+                {% endfor %}
+        
+             
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
@@ -73,7 +75,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            {% endif %}
 
             <div class="pagination">
                 <span class="step-links">

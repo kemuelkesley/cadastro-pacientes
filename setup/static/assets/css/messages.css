@@ -1,0 +1,11 @@
+.largura_messages {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: solid 1px green;
+}
+
+.tamanho_fonte {
+    font-size: 15px;
+    margin-bottom: 0px;
+}

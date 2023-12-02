@@ -11,13 +11,14 @@ from django.utils import timezone
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
     email = models.EmailField()
-    data_nascimento = models.DateField()
-    celular = PhoneNumberField(region='BR')  # Defina a região como Brasil
+    data_nascimento = models.DateField(verbose_name="Data de Nascimento")
+    celular = PhoneNumberField(region='BR') 
 
     ativo = models.BooleanField(default=True)
-    data_exclusao = models.DateTimeField(null=True, blank=True)
+    data_exclusao = models.DateTimeField(verbose_name="Data de Exclusão",null=True, blank=True)
     usuario_exclusao = models.ForeignKey(
         User, 
+        verbose_name="Usuário que excluiu",
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True, 
