@@ -1,0 +1,30 @@
+/* Adicione estilos personalizados para o modal */
+.modal-content {
+    background-color: #f8f9fa; /* Cor de fundo do modal */
+    border-radius: 10px; /* Borda arredondada do modal */
+}
+
+.modal-header {
+    background-color: #198754; /* Cor de fundo do cabeçalho do modal */
+    color: #fff; /* Cor do texto do cabeçalho do modal */
+    border-bottom: 1px solid #dee2e6; /* Borda inferior do cabeçalho do modal */
+}
+
+.modal-body {
+    padding: 20px; /* Espaçamento interno do corpo do modal */
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6; /* Borda superior do rodapé do modal */
+}
+
+.btn-success {
+    background-color: #28a745; /* Cor de fundo do botão Confirmar */
+    color: #fff; /* Cor do texto do botão Confirmar */
+    border: 1px solid #28a745; /* Borda do botão Confirmar */
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Cor de fundo do botão Confirmar ao passar o mouse */
+    border: 1px solid #218838; /* Borda do botão Confirmar ao passar o mouse */
+}

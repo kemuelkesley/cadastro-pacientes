@@ -25,7 +25,7 @@
    
 
 
-    <div class="container  mt-5">
+    <section class="container  mt-5">
         <h2>Confirmar Exclusão</h2>
         <p>Tem certeza de que deseja excluir este paciente?</p>
         <form method="POST" action="{% url 'deletar_contato' contato.pk %}">
@@ -43,7 +43,7 @@
                 <a href="{% url 'clinica_list' %}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>
-    </div>
+    </section>
 
     {% include "partials/footer.html" %}
 
