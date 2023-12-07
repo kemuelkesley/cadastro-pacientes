@@ -39,7 +39,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clinica.apps.ClinicaConfig',
+
+    # apps terceiros
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+
+# Para o crispy forms funcionar, é necessário adicionar o seguinte código no settings.py:
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 MIDDLEWARE = [
@@ -129,7 +139,12 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#AUTO_LOGOUT = {'IDLING_TIME': 60*60*2, 'LOGOUT_URL': '/accounts/login/', 'LOGOUT_REDIRECT_URL': '/accounts/login/'}
+AUTO_LOGOUT = {'IDLE_TIME': 30, 'MESSAGE': 'Você foi deslogado por inatividade'}

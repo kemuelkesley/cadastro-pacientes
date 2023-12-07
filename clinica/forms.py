@@ -2,6 +2,7 @@ from django import forms
 from clinica.models import Contato
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
+from .validators import validate_nome, validate_celular
 
 
 
@@ -12,7 +13,7 @@ class ContatoForm(forms.ModelForm):
         label='Nome', 
         max_length=50,
         required=True,   
-        error_messages={"required": "Por favor entre com o seu nome"},
+        validators=[validate_nome],
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input', 
             'placeholder': 'Digite seu nome',
@@ -43,7 +44,8 @@ class ContatoForm(forms.ModelForm):
     celular = forms.CharField(
         label='Celular', 
         max_length=15, 
-        required=True,   
+        required=True,
+        validators=[validate_celular],   
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input',
             'data-mask':"(00) 00000-0000", 

@@ -18,7 +18,7 @@ class Contato(models.Model):
     data_exclusao = models.DateTimeField(verbose_name="Data de Exclusão",null=True, blank=True)
     usuario_exclusao = models.ForeignKey(
         User, 
-        verbose_name="Usuário que excluiu",
+        verbose_name="Quem excluiu?",
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True, 

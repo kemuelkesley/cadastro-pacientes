@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
 from django.db.models import Q
+from .validators import validate_nome, validate_celular
 
 
 # usado para criar pesquisa na pagina
@@ -64,8 +65,14 @@ class ClinicaUpdateView(UpdateView):
     success_url = reverse_lazy("clinica_list")
     template_name = "clinica/editar_contato.html"
 
+    # tem um certo controle no formulario de editar contato
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+
+        # Adiciona validador customizado ao campo "nome"
+        form.fields["nome"].validators.append(validate_nome)
+        form.fields["celular"].validators.append(validate_celular)
+
         form.fields["nome"].widget.attrs["class"] = "form-control custom-input"
         form.fields["email"].widget.attrs["class"] = "form-control custom-input"
         form.fields["data_nascimento"].widget.attrs[
