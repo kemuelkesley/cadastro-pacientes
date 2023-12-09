@@ -2,7 +2,8 @@ from django import forms
 from clinica.models import Contato
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
-from .validators import validate_nome, validate_celular
+from .validators import validate_nome, validate_celular, validate_data_nascimento
+
 
 
 
@@ -17,7 +18,6 @@ class ContatoForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input', 
             'placeholder': 'Digite seu nome',
-            'autofocus': True,
         }),          
     )
         
@@ -30,13 +30,14 @@ class ContatoForm(forms.ModelForm):
 
     data_nascimento = forms.DateField(
         label='Data de Nascimento', 
-        required=True,  
+        required=True, 
+        validators=[validate_data_nascimento], 
         widget=forms.DateInput(attrs={
             'class': 'form-control custom-input',
             'type' : 'data',
             'data-mask' : "00/00/0000",
             'placeholder' : 'dd/mm/aaaa'
-        }),          
+        }), 
     )
 
 
@@ -59,5 +60,4 @@ class ContatoForm(forms.ModelForm):
         fields = ['nome', 'email', 'data_nascimento', 'celular']
 
 
-    
-    
+   

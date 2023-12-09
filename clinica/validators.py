@@ -1,4 +1,5 @@
 from django import forms
+import datetime
 
 def validate_nome(value):
     if len(value) <= 2:
@@ -16,7 +17,16 @@ def validate_celular(value):
     return value    
  
     
-    
+
+def validate_data_nascimento(value):
+    if value > datetime.date.today():
+        raise forms.ValidationError("Data de nascimento inválida")
+    elif value < datetime.date(1900, 1, 1):
+        raise forms.ValidationError("Data de nascimento inválida")
+    elif value == datetime.date.today():
+        raise forms.ValidationError("Data de nascimento inválida")
+
+    return value
 
 
 
