@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
 from django.db.models import Q
-from .validators import validate_nome, validate_celular
+from .validators import validate_nome, validate_celular, validate_data_nascimento
 
 
 # usado para criar pesquisa na pagina
@@ -72,7 +72,9 @@ class ClinicaUpdateView(UpdateView):
         # Adiciona validador customizado ao campo "nome"
         form.fields["nome"].validators.append(validate_nome)
         form.fields["celular"].validators.append(validate_celular)
+        form.fields["data_nascimento"].validators.append(validate_data_nascimento)
 
+        # Adiciona classes CSS aos campos do formulário
         form.fields["nome"].widget.attrs["class"] = "form-control custom-input"
         form.fields["email"].widget.attrs["class"] = "form-control custom-input"
         form.fields["data_nascimento"].widget.attrs[
