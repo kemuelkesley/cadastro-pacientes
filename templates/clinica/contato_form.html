@@ -13,38 +13,28 @@
 
     <script src="{% static 'js/mascaras.js' %}"></script>
 
-    <!-- google fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat&display=swap" rel="stylesheet">
-       
+    {% include "partials/fontes.html" %}   
 
     <!--CSS-->
     <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fontes.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fontes.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/formulario.css' %}">
 
   
 </head>
 <body>     
     
-    <nav class="navbar" style="background-color: #063115;">
-        <div class="container">
-          <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">Cadastro de Pacientes <span style="font-size: 12px;">ver-1.0</span></a>
-        </div>
-    </nav>
+    {% include "partials/navbar.html" %}
 
 
-    <main class="container mt-5 contorno_table">
-        <h3 class="mt-3 text-center">Cadastrar</h3>
+    <main class="container mt-5 contorno__form__geral">
+        <h3 class="mt-3 text-center">Cadastrar Paciente</h3>
         <form class="mt-3" method="POST">
             {% csrf_token %}
             {% load crispy_forms_tags %}
             {{ form | crispy }}
           
-            <button class="btn btn-outline-success mb-3">Enviar</button>
+            <button class="button__form mb-3">Enviar</button>
         </form>
     </main> 
 

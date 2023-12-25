@@ -21,7 +21,7 @@ class ContatoForm(forms.ModelForm):
     )
         
     email = forms.EmailField(
-        label='Email', 
+        label='E-mail', 
         max_length=50,
         required=True,  
         widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira seu email'}),            

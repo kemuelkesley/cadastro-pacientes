@@ -11,6 +11,25 @@ label {
     margin-top: 5rem;
 }
 
+
+.contorno__form__geral {
+    width: 45%;
+    border-color: #228b47;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 15px;
+    margin-top: 5rem;
+}
+
+.contorno__form__exclusao {
+    width: 35%;
+    border-color: #228b47;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 15px;
+    margin-top: 5rem;
+}
+
 .button__form {
     background-color: #228b47;
     color: white;
