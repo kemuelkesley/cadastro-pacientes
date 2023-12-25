@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'assets/css/tela_login.css' %}">
+</head>
+<body>
+
+    <div class="login-container">
+        <form class="login-form" action="#" method="POST">
+            {% csrf_token %}
+            <h1>Login</h1>
+            <div class="form-group">
+                {{form_login.username.errors}}
+                <label for="usuario">Usuário</label>
+                {{form_login.username}}
+                <!-- <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuário" required> -->
+            </div>
+
+            <div class="form-group">
+                {{form_login.password.errors}}
+                <label for="senha">Senha</label>
+                {{form_login.password}}
+                <!-- <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required> -->
+            </div>
+
+            <input type="submit" value="Login">
+            <p>Não tem uma conta? <a href="{% url 'cadastrar_usuario' %}">Cadastre-se</a></p>
+        </form>
+    </div>
+
+</body>
+</html>

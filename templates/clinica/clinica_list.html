@@ -19,12 +19,13 @@
     <link rel="stylesheet" href="{% static 'assets/css/paginator.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">    
     <link rel="stylesheet" href="{% static 'assets/css/fontes.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">    
+    <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">   
+    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
 </head>
 <body>
 
 
-    <nav class="navbar" style="background-color: #063115;">
+    <!-- <nav class="navbar" style="background-color: #063115;">
         <div class="container">
             <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;"><i class="bi bi-hospital-fill"></i> Clinica Vida <span style="font-size: 12px;">ver-1.0</span></a>
             
@@ -33,19 +34,67 @@
                 <button class="btn btn-outline-info" type="submit">Procurar</button>
             </form>
         </div>
+        {% if user.is_authenticated %}
+        <div class="dropdown">
+            <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+               {{ user.username }}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Sair</a></li>
+            </ul>
+          </div>
+        {% endif %}
+    </nav> -->
+
+    <nav class="navbar navbar-expand-lg" style="background-color: #063115; color: white;">
+        <div class="container">
+            <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">
+                <i class="bi bi-hospital-fill"></i> Clinica Vida <span style="font-size: 12px;">ver-1.0</span>
+            </a>
+            
+            <!-- <div class="d-flex flex-grow-1"> 
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" name="nome" type="search" placeholder="Buscar paciente" aria-label="Search">
+                    <button class="btn btn-outline-info" type="submit">Procurar</button>
+                </form>
+            </div> -->
+    
+            {% if user.is_authenticated %}
+                <div class="ml-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person"></i> {{ user.username }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'deslogar_usuario' %}">Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
     </nav>
+    
 
     <main class="container mt-3  contorno_table">
         <h3 class="text-center mt-1">Pacientes</h3>
         <section class="container mt-2">
-            <a class="btn btn-outline-success mb-3" href="{% url 'contato_form' %}"><i class="bi bi-person-plus-fill"></i> Cadastrar paciente</a>
-
-                {% for msg in messages %}
-                    <div class="alert {% if 'excluído' in msg.tags %}alert-danger{% else %}alert-success{% endif %} largura_messages" role="alert">
-                        <p class="tamanho_fonte">{{ msg | safe }}</p>
-                    </div>
-                {% endfor %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <a class="btn btn-outline-success mb-3" href="{% url 'contato_form' %}">
+                        <i class="bi bi-person-plus-fill"></i> Cadastrar paciente
+                    </a>
         
+                    <form class="d-flex mb-3" role="search">
+                        <input class="form-control custom-input me-2" name="nome" type="search" placeholder="Buscar paciente" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Procurar</button>
+                    </form>
+                </div>
+        
+                    {% for msg in messages %}
+                        <div class="alert {% if 'excluído' in msg.tags %}alert-danger{% else %}alert-success{% endif %} largura_messages" role="alert">
+                            <p class="tamanho_fonte">{{ msg | safe }}</p>
+                        </div>   
+                    {% endfor %}    
+
              
                 <table class="table table-hover">
                     <thead class="table-light">

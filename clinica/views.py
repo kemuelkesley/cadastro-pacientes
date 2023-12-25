@@ -9,8 +9,17 @@ from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
+# Autenticação
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+
+
+
 from django.db.models import Q
 from .validators import validate_nome, validate_celular, validate_data_nascimento
+
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # usado para criar pesquisa na pagina
@@ -32,7 +41,7 @@ def criar_paginacao(request, objeto):
     return page_obj
 
 
-class ClinicaListView(ListView):
+class ClinicaListView(LoginRequiredMixin,ListView):
     model = Contato
     template_name = "clinica/clinica_list.html"
     context_object_name = "clinica_list"
@@ -159,3 +168,43 @@ def cadastro(request):
 
 def sucesso(request):
     return render(request, "clinica/sucesso.html")
+
+
+######################### Cadastro de usuario no sitemas e login #############################
+
+
+def cadastrar_usuario(request):
+    if request.method == "POST":
+        form_usuario = UserCreationForm(request.POST)
+        if form_usuario.is_valid():
+            form_usuario.save()
+            return redirect('logar_usuario')
+    else:
+        form_usuario = UserCreationForm()
+    return render(request, 'login/cadastro.html', {'form_usuario': form_usuario})
+
+
+def logar_usuario(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        usuario = authenticate(request, username=username, password=password)
+        if usuario is not None:
+            login(request, usuario)
+            return redirect('clinica_list')
+        else:
+            form_login = AuthenticationForm()
+    else:
+        form_login = AuthenticationForm()
+    return render(request, 'login/login.html', {'form_login': form_login})
+
+
+
+def deslogar_usuario(request):
+    logout(request)
+    return redirect('logar_usuario')
+
+
+
+def index(request):
+    return render(request, 'login/index.html')
