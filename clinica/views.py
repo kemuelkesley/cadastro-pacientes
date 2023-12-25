@@ -1,7 +1,7 @@
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from .forms import ContatoForm
+from .forms import ContatoForm, CadastroForm
 from .models import Contato
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -18,8 +18,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .validators import validate_nome, validate_celular, validate_data_nascimento
 
-
+# Acessar se estiver logado no sistema
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+# import de mensagem de sucesso
+from django.contrib import messages
+
 
 
 # usado para criar pesquisa na pagina
@@ -62,10 +66,6 @@ class ClinicaListView(LoginRequiredMixin,ListView):
 
         return context
 
-
-#  success_message = messages.get_messages(self.request)
-#         if success_message:
-#             context['success_message'] = success_message
 
 
 class ClinicaUpdateView(UpdateView):
@@ -173,15 +173,28 @@ def sucesso(request):
 ######################### Cadastro de usuario no sitemas e login #############################
 
 
+# def cadastrar_usuario(request):
+#     if request.method == "POST":
+#         form_usuario = UserCreationForm(request.POST)
+#         if form_usuario.is_valid():
+#             form_usuario.save()
+#             return redirect('logar_usuario')
+#     else:
+#         form_usuario = UserCreationForm()
+#     return render(request, 'login/cadastro.html', {'form_usuario': form_usuario})
+
+
 def cadastrar_usuario(request):
     if request.method == "POST":
-        form_usuario = UserCreationForm(request.POST)
+        form_usuario = CadastroForm(request.POST)  # Use CadastroForm em vez de UserCreationForm
         if form_usuario.is_valid():
             form_usuario.save()
-            return redirect('logar_usuario')
+            messages.success(request, 'Sua conta foi criada com sucesso. Faça login para continuar.')
+            return redirect('cadastrar_usuario')
     else:
-        form_usuario = UserCreationForm()
+        form_usuario = CadastroForm()
     return render(request, 'login/cadastro.html', {'form_usuario': form_usuario})
+
 
 
 def logar_usuario(request):

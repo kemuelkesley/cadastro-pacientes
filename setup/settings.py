@@ -157,5 +157,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# settings.py
+LOGIN_URL = 'logar_usuario'
+LOGIN_REDIRECT_URL = 'logar_usuario'
+
 #AUTO_LOGOUT = {'IDLING_TIME': 60*60*2, 'LOGOUT_URL': '/accounts/login/', 'LOGOUT_REDIRECT_URL': '/accounts/login/'}
-AUTO_LOGOUT = {'IDLE_TIME': 30, 'MESSAGE': 'Você foi deslogado por inatividade'}
+AUTO_LOGOUT = {'IDLE_TIME': 10, 'MESSAGE': 'Você foi deslogado por inatividade'}
+
+
+

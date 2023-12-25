@@ -32,7 +32,7 @@
 
 
     <section class="container  mt-5">
-        <h2>Confirmar Exclusão</h2>
+        <h2 class="text-center">Confirmar Exclusão</h2>
         <p>Tem certeza de que deseja excluir este paciente?</p>
         <form method="POST" action="{% url 'deletar_contato' contato.pk %}">
             {% csrf_token %}
