@@ -69,7 +69,7 @@ class CadastroForm(UserCreationForm):
         required=True,           
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input', 
-            'placeholder': 'Digite Usuario',
+            'placeholder': 'Crie um nome de usuário',
         }),          
     )
 

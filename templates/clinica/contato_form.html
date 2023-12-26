@@ -32,8 +32,7 @@
         <form class="mt-3" method="POST">
             {% csrf_token %}
             {% load crispy_forms_tags %}
-            {{ form | crispy }}
-          
+            {{ form | crispy }}          
             <button class="button__form mb-3">Enviar</button>
         </form>
     </main> 

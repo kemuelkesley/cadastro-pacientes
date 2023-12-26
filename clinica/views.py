@@ -4,7 +4,6 @@ from django.urls import reverse, reverse_lazy
 from .forms import ContatoForm, CadastroForm
 from .models import Contato
 from django.core.paginator import Paginator
-from django.contrib import messages
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe

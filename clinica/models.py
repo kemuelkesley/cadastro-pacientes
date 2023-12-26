@@ -10,7 +10,7 @@ from django.utils import timezone
 
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     data_nascimento = models.DateField(verbose_name="Data de Nascimento")
     celular = PhoneNumberField(region='BR') 
 
