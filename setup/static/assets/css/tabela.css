@@ -1,3 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;    
+    background-color: #f4f4f4;
+}
+
+
 .contorno_table {
     /* border-color: #1ebc55; */
     border-color: #228b47;
@@ -6,3 +13,10 @@
     border-radius: 15px;
 }
 
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f2f2f2; /* Cor de fundo para linhas ímpares */
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: #ffffff; /* Cor de fundo para linhas pares */
+}

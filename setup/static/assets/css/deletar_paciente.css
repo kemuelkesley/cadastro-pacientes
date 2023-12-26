@@ -1,9 +1,9 @@
 .custom-list {
-    background-color: #f8f9fa; /* Cor de fundo personalizada */
-    border: 1px solid #dee2e6; /* Borda personalizada */
-    border-radius: 5px; /* Borda arredondada */
+    background-color: #f8f9fa; 
+    border: 1px solid #dee2e6; 
+    border-radius: 5px; 
 }
 
 .custom-list .list-group-item {
-    background-color: #f8f9fa; /* Cor de fundo personalizada para cada item */
+    background-color: #f8f9fa; 
 }
