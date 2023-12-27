@@ -205,9 +205,9 @@ def logar_usuario(request):
             login(request, usuario)
             return redirect('clinica_list')
         else:
-            form_login = AuthenticationForm()
-    else:
-        form_login = AuthenticationForm()
+            messages.error(request, 'Usuário ou senha incorretos. Por favor, tente novamente.')
+   
+    form_login = AuthenticationForm()
     return render(request, 'login/login.html', {'form_login': form_login})
 
 

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # apps do projeto
     'clinica.apps.ClinicaConfig',
 
     # apps terceiros
@@ -157,12 +159,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# settings.py
+# Na hora de logar o usuário, ele será redirecionado para a página de login
 LOGIN_URL = 'logar_usuario'
 LOGIN_REDIRECT_URL = 'logar_usuario'
 
-#AUTO_LOGOUT = {'IDLING_TIME': 60*60*2, 'LOGOUT_URL': '/accounts/login/', 'LOGOUT_REDIRECT_URL': '/accounts/login/'}
-AUTO_LOGOUT = {'IDLE_TIME': 10, 'MESSAGE': 'Você foi deslogado por inatividade'}
-
-
-
+# Fazer a sessão expirar em 30 minutos
+SESSION_COOKIE_AGE = 1800
