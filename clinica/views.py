@@ -149,11 +149,10 @@ def cadastro(request):
         form = ContatoForm(request.POST)
         if form.is_valid():
             form.save()
-            novo_contato = form.save(commit=False)  # Evita salvar no banco antes de associar o objeto
+            novo_contato = form.save(commit=False)
+            novo_contato.usuario_criacao = request.user
             novo_contato.save()
-
-            #messages.success(request, f"Paciente {novo_contato.nome} cadastrado com sucesso!")
-
+            
             messages.success(
                 request, 
                 mark_safe(f'Paciente <a href="{reverse("clinica_update", kwargs={"pk": novo_contato.pk})}" class="text-primary">{novo_contato.nome}</a> cadastrado com sucesso!'))
@@ -161,7 +160,6 @@ def cadastro(request):
             return redirect("clinica_list")
     else:
         form = ContatoForm()
-
     return render(request, "clinica/contato_form.html", {"form": form})
 
 
@@ -170,18 +168,6 @@ def sucesso(request):
 
 
 ######################### Cadastro de usuario no sitemas e login #############################
-
-
-# def cadastrar_usuario(request):
-#     if request.method == "POST":
-#         form_usuario = UserCreationForm(request.POST)
-#         if form_usuario.is_valid():
-#             form_usuario.save()
-#             return redirect('logar_usuario')
-#     else:
-#         form_usuario = UserCreationForm()
-#     return render(request, 'login/cadastro.html', {'form_usuario': form_usuario})
-
 
 def cadastrar_usuario(request):
     if request.method == "POST":
