@@ -8,6 +8,15 @@ from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.views.generic import ListView
+from django.core.paginator import Paginator
+from clinica.models import Contato
+
+
+
+
 # Autenticação
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout

@@ -34,7 +34,7 @@ def validate_idade(data_nascimento):
     hoje = datetime.date.today()
     idade = hoje.year - data_nascimento.year - ((hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day))
 
-    if idade < 18:
-        raise forms.ValidationError("Você deve ser maior de 18 anos para se cadastrar.")
+    # if idade < 18:
+    #     raise forms.ValidationError("Você deve ser maior de 18 anos para se cadastrar.")
 
 
