@@ -34,6 +34,10 @@ from django.contrib import messages
 
 
 
+# def index(request):
+#     return render(request, 'index.html')
+
+
 # usado para criar pesquisa na pagina
 def buscar_contatos(nome):
     if nome:
@@ -198,7 +202,7 @@ def logar_usuario(request):
         usuario = authenticate(request, username=username, password=password)
         if usuario is not None:
             login(request, usuario)
-            return redirect('clinica_list')
+            return redirect('index')
         else:
             messages.error(request, 'Usuário ou senha incorretos. Por favor, tente novamente.')
    
