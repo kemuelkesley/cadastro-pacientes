@@ -2,24 +2,45 @@
 <nav class="navbar navbar-expand-lg" style="background-color: #063115; color: white;">
     <div class="container-fluid">
         <a href="{% url 'clinica_list' %}" class="navbar-brand" style="font-size: 25px; color: white;">
-            <i class="bi bi-hospital-fill"></i> Clinica Vida <span style="font-size: 12px;">ver-1.1</span>
+            <i class="bi bi-hospital-fill"></i> Clinica Vida 
+            {% comment %} <span style="font-size: 12px;">ver-1.1</span> {% endcomment %}
         </a>
-         
-        {% if user.is_authenticated %}
-            <div class="ml-auto">
-                <div class="dropdown">
-                    <span>Logado como:</span>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Item Home -->
+                <li class="nav-item ms-5 me-3">
+                    <a class="nav-link text-white" href="{% url 'index' %}">
+                        Home
+                    </a>
+                </li>
+                <!-- Você pode adicionar outros itens aqui -->
+            </ul>
+
+            {% if user.is_authenticated %}
+                <div class="dropdown ms-auto">
+                    <span class="text-white me-2">Logado como:</span>
                     <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person"></i> {{ user.username }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/"><i class="bi bi-person-fill-gear"></i></i> Administração</a></li>
-                        <li><a class="dropdown-item" href="{% url 'deslogar_usuario' %}"><i class="bi bi-x-lg"></i> Sair</a></li>
+                        <li>
+                            <a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/">
+                                <i class="bi bi-person-fill-gear"></i> Administração
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'deslogar_usuario' %}">
+                                <i class="bi bi-x-lg"></i> Sair
+                            </a>
+                        </li>
                     </ul>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </nav>
-
-

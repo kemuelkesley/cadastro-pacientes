@@ -20,17 +20,19 @@
 <body>
 
 
-    {% include "partials/navbar.html" %}
-    
+    {% include "partials/navbar.html" %}  
 
+   
+    
     <main class="container mt-3  contorno_table">
         <h3 class="text-center mt-1">Pacientes</h3>
         <section class="container mt-2">
                 <div class="d-flex justify-content-between align-items-center">
                     <a class="btn btn-outline-success mb-3" href="{% url 'contato_form' %}">
                         <i class="bi bi-person-plus-fill"></i> Cadastrar paciente
-                    </a>
-        
+                    </a>                   
+                   
+
                     <form class="d-flex mb-3" role="search">
                         <input class="form-control custom-input me-2" name="nome" type="search" placeholder="Buscar paciente" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Procurar</button>
@@ -76,6 +78,10 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+{% comment %}                     
+                    <a href="{% url 'index' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left-circle"></i> Voltar
+                    </a> {% endcomment %}
                 </table>
 
             <div class="pagination">
@@ -97,9 +103,13 @@
                     {% if criar_paginacao.has_next %}
                         <a href="?page={{ criar_paginacao.paginator.num_pages }}">Último &raquo;</a>
                     {% endif %}
-                </span>
+                </span>  
             </div>
+            {% comment %} <a href="{% url 'index' %}" class="mb-2 btn btn-outline-primary">
+                <i class="bi bi-arrow-left-circle"></i> Voltar
+            </a>      {% endcomment %}
         </section>
+                    
     </main>
  
 

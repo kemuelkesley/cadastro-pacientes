@@ -34,9 +34,6 @@ from django.contrib import messages
 
 
 
-# def index(request):
-#     return render(request, 'index.html')
-
 
 # usado para criar pesquisa na pagina
 def buscar_contatos(nome):
@@ -219,3 +216,16 @@ def deslogar_usuario(request):
 
 def index(request):
     return render(request, 'login/index.html')
+
+
+
+def agendar_consulta(request):
+    if request.method == "POST":
+        form = ContatoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Consulta agendada com sucesso!')
+            return redirect('clinica_list')
+    else:
+        form = ContatoForm()
+    return render(request, 'clinica/agendamento.html', {'form': form})
