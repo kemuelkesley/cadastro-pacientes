@@ -1,5 +1,5 @@
 from django.urls import path
-from clinica.views import cadastro, sucesso, deletar_contato, ClinicaListView ,ClinicaUpdateView, cadastrar_usuario, index, login, deslogar_usuario,logar_usuario, agendar_consulta
+from clinica.views import cadastro, sucesso, deletar_contato, ClinicaListView ,ClinicaUpdateView, cadastrar_usuario, index, login, deslogar_usuario,logar_usuario, agendar_consulta, listar_agendamentos
 
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
    path('contato_form/', cadastro, name='contato_form'),
    path('sucesso/', sucesso, name='sucesso'),
    path('agendar_consulta/', agendar_consulta, name='agendar_consulta'),
+   path('listar_agendamentos/', listar_agendamentos, name='listar_agendamentos')
 ]

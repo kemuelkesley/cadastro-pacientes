@@ -43,3 +43,14 @@ class Contato(models.Model):
     def __str__(self):
         return self.nome
     
+
+class Agendamento(models.Model):
+    paciente = models.ForeignKey(Contato ,on_delete=models.CASCADE)
+    data_agendamento = models.DateField(verbose_name="Data do Agendamento")
+    hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
+    observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')}"

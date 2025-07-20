@@ -1,5 +1,5 @@
 from django.contrib import admin
-from clinica.models import Contato
+from clinica.models import Contato, Agendamento
 
 # Register your models here.
 
@@ -22,4 +22,19 @@ class ContatoAdmin(admin.ModelAdmin):
     
 
 
+class AgendamentoAdmin(admin.ModelAdmin):
+    list_display = ('id', 
+    'paciente', 
+    'data_agendamento', 
+    'hora_agendamento', 
+    'observacao',
+    'criado_em',
+    )
+
+    
+    list_display_links = ('id', 'paciente',)
+    list_per_page = 10
+
+
 admin.site.register(Contato, ContatoAdmin)
+admin.site.register(Agendamento, AgendamentoAdmin)

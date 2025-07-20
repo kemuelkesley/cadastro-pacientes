@@ -1,5 +1,5 @@
 from django import forms
-from clinica.models import Contato
+from clinica.models import Contato, Agendamento
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
 from .validators import validate_nome, validate_celular, validate_data_nascimento
@@ -103,3 +103,35 @@ class CadastroForm(UserCreationForm):
     #     self.fields['username'].widget.attrs.update({'class': 'form-control'})
     #     self.fields['password1'].widget.attrs.update({'class': 'form-control'})
     #     self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
+
+class AgendamentoForm(forms.ModelForm):
+    class Meta:
+        model = Agendamento
+        fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao']
+        widgets = {
+            'data_agendamento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'hora_agendamento': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'paciente': forms.Select(attrs={'class': 'form-control'}),
+            'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get('data_agendamento')
+        hora = cleaned_data.get('hora_agendamento')
+
+        if data and hora:
+            conflito = Agendamento.objects.filter(
+                data_agendamento=data,
+                hora_agendamento=hora
+            )
+
+            # Ignora o próprio agendamento ao editar
+            if self.instance.pk:
+                conflito = conflito.exclude(pk=self.instance.pk)
+
+            if conflito.exists():
+                raise forms.ValidationError("Já existe um agendamento para essa data e hora.")
+
+        return cleaned_data

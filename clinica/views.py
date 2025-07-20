@@ -1,7 +1,7 @@
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from .forms import ContatoForm, CadastroForm
+from .forms import AgendamentoForm, ContatoForm, CadastroForm
 from .models import Contato
 from django.core.paginator import Paginator
 from django.views.generic import ListView, UpdateView
@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views.generic import ListView
 from django.core.paginator import Paginator
-from clinica.models import Contato
+from clinica.models import Contato, Agendamento
 
 
 
@@ -221,11 +221,20 @@ def index(request):
 
 def agendar_consulta(request):
     if request.method == "POST":
-        form = ContatoForm(request.POST)
+        form = AgendamentoForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Consulta agendada com sucesso!')
-            return redirect('clinica_list')
+            return redirect('listar_agendamentos')  # ou qualquer página desejada
     else:
-        form = ContatoForm()
-    return render(request, 'clinica/agendamento.html', {'form': form})
+        form = AgendamentoForm()
+    
+    return render(request, 'agendamento/agendamento.html', {'form': form})
+
+
+def listar_agendamentos(request):
+    agendamentos = Agendamento.objects.all().order_by('data_agendamento', 'hora_agendamento')
+    paginator = Paginator(agendamentos, 10)  # 10 agend
+    return render(request, 'agendamento/listar_agendamentos.html', {'agendamentos': agendamentos})
+
+    
