@@ -1,4 +1,4 @@
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from .forms import AgendamentoForm, ContatoForm, CadastroForm
@@ -232,9 +232,23 @@ def agendar_consulta(request):
     return render(request, 'agendamento/agendamento.html', {'form': form})
 
 
+
 def listar_agendamentos(request):
     agendamentos = Agendamento.objects.all().order_by('data_agendamento', 'hora_agendamento')
-    paginator = Paginator(agendamentos, 10)  # 10 agend
     return render(request, 'agendamento/listar_agendamentos.html', {'agendamentos': agendamentos})
 
     
+
+def agendamentos_json(request):
+    agendamentos = Agendamento.objects.all()
+    eventos = []
+
+    for ag in agendamentos:
+        eventos.append({
+            "title": ag.paciente.nome,
+            "start": f"{ag.data_agendamento}T{ag.hora_agendamento}",
+            "end": f"{ag.data_agendamento}T{ag.hora_agendamento}",
+            "color": "red",            
+        })
+
+    return JsonResponse(eventos, safe=False)    

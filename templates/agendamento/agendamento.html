@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
     {% include "partials/fontes.html" %}
 
@@ -16,13 +18,43 @@
     <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">    
     <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">   
     <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
+
+     <style>
+        #calendar {
+        max-width: 100%;
+        font-size: 0.75rem;        
+        
+      }
+
+      .fc .fc-daygrid-day-frame {
+          padding: 2px;
+      }
+
+      .fc .fc-toolbar-title {
+          font-size: 1rem;
+      }
+
+      .fc .fc-button {
+          padding: 2px 6px;
+          font-size: 0.75rem;
+      }
+
+      .fc .fc-col-header-cell-cushion {
+          font-size: 0.75rem;
+      }
+
+      .fc-daygrid-event {
+          font-size: 0.7rem;
+          padding: 2px;
+      }
+    </style>
 </head>
 <body>
 
 
     {% include "partials/navbar.html" %}  
 
-    <div class="container mt-5">
+    <!-- <div class="container mt-5">
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-success text-white py-3 rounded-top-4">
                 <h4 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i> Agendamento de Consulta</h4>
@@ -78,48 +110,135 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <div id="calendar"></div>
-
-    <!-- Modal para marcar horário -->
-    <div class="modal fade" id="modalAgendamento" tabindex="-1" aria-labelledby="modalAgendamentoLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="modal-header">
-                <h5 class="modal-title">Novo Agendamento</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                <input type="hidden" name="data" id="dataSelecionada">
-
-                <div class="mb-3">
-                    <label for="id_paciente" class="form-label">Paciente</label>
-                    {{ form.paciente }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="id_hora" class="form-label">Hora</label>
-                    {{ form.hora }}
-                </div>
-
-                <div class="mb-3">
-                    <label for="id_observacao" class="form-label">Observação</label>
-                    {{ form.observacao }}
-                </div>
-                </div>
-                <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Agendar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </form>
+    <div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-header bg-success text-white py-3 rounded-top-4">
+        <h4 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i> Agendamento de Consulta</h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="row">
+          <!-- CALENDÁRIO -->
+          <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-light fw-semibold">
+                Datas e horários ocupados
+              </div>
+              <div class="card-body">
+                <div id="calendar"></div>
+              </div>
             </div>
+          </div>
+
+          <!-- FORMULÁRIO -->
+          <div class="col-md-6 mb-4">
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <form method="POST" novalidate>
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="id_paciente" class="form-label fw-semibold">Paciente</label>
+                {{ form.paciente }}
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="id_data_agendamento" class="form-label fw-semibold">Data</label>
+                  {{ form.data_agendamento }}
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="id_hora_agendamento" class="form-label fw-semibold">Hora</label>
+                  {{ form.hora_agendamento }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="id_observacao" class="form-label fw-semibold">Observação</label>
+                {{ form.observacao }}
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary">
+                  <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+                <button type="submit" class="btn btn-success px-4">
+                  <i class="bi bi-check-circle-fill me-1"></i> Agendar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+
+
+  <!-- Modal de Horário Ocupado -->
+  <div class="modal fade" id="modalHorarioOcupado" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-danger">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="modalLabel">Horário já agendado</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <p id="mensagem-horario"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     {% include "partials/footer.html" %}
+
+   <!-- FullCalendar -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        slotDuration: '00:30:00',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '18:00:00',
+        allDaySlot: false,
+        locale: 'pt-br',
+        height: 'auto',
+        events: '{% url "agendamentos_json" %}',
+        eventClick: function(info) {
+          const paciente = info.event.title;
+          const horario = new Date(info.event.start).toLocaleString('pt-BR', {
+            hour: '2-digit', minute: '2-digit'
+          });
+          const data = new Date(info.event.start).toLocaleDateString('pt-BR');
+
+          const mensagem = `O horário <strong>${horario}</strong> do dia <strong>${data}</strong> já está agendado para <strong>${paciente}</strong>.`;
+          document.getElementById('mensagem-horario').innerHTML = mensagem;
+
+          const modal = new bootstrap.Modal(document.getElementById('modalHorarioOcupado'));
+          modal.show();
+        }
+      });
+
+      calendar.render();
+    });
+  </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> 
