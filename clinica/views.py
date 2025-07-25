@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -13,8 +14,8 @@ from django.db.models import Q
 from django.views.generic import ListView
 from django.core.paginator import Paginator
 from clinica.models import Contato, Agendamento
-
-
+from django.utils.timezone import now
+import datetime
 
 
 # Autenticação
@@ -213,32 +214,49 @@ def deslogar_usuario(request):
     return redirect('logar_usuario')
 
 
-
+@login_required
 def index(request):
     return render(request, 'login/index.html')
 
 
-
+@login_required
 def agendar_consulta(request):
     if request.method == "POST":
         form = AgendamentoForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Consulta agendada com sucesso!')
-            return redirect('listar_agendamentos')  # ou qualquer página desejada
+            return redirect('listar_agendamentos')  
     else:
         form = AgendamentoForm()
     
     return render(request, 'agendamento/agendamento.html', {'form': form})
 
 
-
+@login_required
 def listar_agendamentos(request):
-    agendamentos = Agendamento.objects.all().order_by('data_agendamento', 'hora_agendamento')
-    return render(request, 'agendamento/listar_agendamentos.html', {'agendamentos': agendamentos})
+    data_param = request.GET.get('data')
+    
+    if data_param:
+        try:
+           data = datetime.datetime.strptime(data_param, "%Y-%m-%d").date()
+        except ValueError:
+            data = now().date()
+    else:
+        data = now().date()  # Se não for passado nada, mostra o dia atual
+
+    agendamentos_list = Agendamento.objects.filter(data_agendamento=data).order_by('hora_agendamento')
+
+    # paginator = Paginator(agendamentos_list, 8)
+    # page_number = request.GET.get('page')
+    # agendamentos = paginator.get_page(page_number)
+
+    return render(request, 'agendamento/listar_agendamentos.html', {
+        'agendamentos': agendamentos_list
+    })
 
     
-
+@login_required
 def agendamentos_json(request):
     agendamentos = Agendamento.objects.all()
     eventos = []
@@ -252,3 +270,6 @@ def agendamentos_json(request):
         })
 
     return JsonResponse(eventos, safe=False)    
+
+
+

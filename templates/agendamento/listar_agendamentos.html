@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+
 
     {% include "partials/fontes.html" %}
 
@@ -22,15 +28,36 @@
 
     {% include "partials/navbar.html" %}  
 
-    <div class="container mt-5">
+
+    {% if messages %}
+      <div class="container mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- <div class="container mt-5">
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
                 <h4 class="mb-0"><i class="bi bi-calendar-week me-2"></i> Lista de Agendamentos</h4>
-                <a href="{% url 'agendar_consulta' %}" class="btn btn-light text-success fw-semibold">
-                    <i class="bi bi-plus-circle"></i> Novo Agendamento
-                </a>
+                <div class="btn-group">
+                    <a href="{% url 'agendar_consulta' %}" class="btn btn-light text-success fw-semibold">
+                        <i class="bi bi-plus-circle"></i> Novo
+                    </a>
+                    <a href="#" class="btn btn-light text-success fw-semibold">
+                        <i class="bi bi-file-earmark-pdf"></i> PDF
+                    </a>
+                    <a href="#" class="btn btn-light text-success fw-semibold">
+                        <i class="bi bi-file-earmark-excel"></i> Excel
+                    </a>
+                </div>
             </div>
             <div class="card-body p-4">
+
                 {% if agendamentos %}
                     <div class="table-responsive">
                         <table class="table table-striped table-hover align-middle">
@@ -66,16 +93,96 @@
                 {% else %}
                     <p class="text-muted">Nenhum agendamento encontrado.</p>
                 {% endif %}
+
             </div>
         </div>
-    </div>
+    </div> -->
 
+  <div class="container mt-3">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-calendar-week me-2"></i> Ver Agendamentos</h4>
+            <div class="btn-group">
+                <a href="{% url 'agendar_consulta' %}" class="btn btn-light text-success fw-semibold">
+                    <i class="bi bi-plus-circle"></i> Novo
+                </a>
+                <a href="" class="btn btn-light text-success fw-semibold">
+                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                </a>
+                <a href="" class="btn btn-light text-success fw-semibold">
+                    <i class="bi bi-file-earmark-excel"></i> Excel
+                </a>
+            </div>
+        </div>
 
+        <div class="card-body p-4">
 
+            <!-- Filtro por data -->
+            <form method="GET" class="mb-4 row g-3 align-items-end">
+                <div class="col-auto">
+                    <label for="data" class="form-label">Filtrar por data:</label>
+                    <input type="text" id="data" name="data" class="form-control custom-input" placeholder="dd/mm/aaaa" value="{{ request.GET.data }}">
+
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success mt-2">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+
+            {% if agendamentos %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Paciente</th>
+                                <th>Data</th>
+                                <th>Hora</th>
+                                <th>Observação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ag in agendamentos %}
+                                <tr>
+                                    <td>{{ ag.paciente.nome }}</td>
+                                    <td>{{ ag.data_agendamento|date:"d/m/Y" }}</td>
+                                    <td>{{ ag.hora_agendamento|time:"H:i" }}</td>
+                                    <td>{{ ag.observacao|default:"—" }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir este agendamento?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
     {% include "partials/footer.html" %}
 
+
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>   
+
+    <script>
+        flatpickr("#data", {
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",  // compatível com o Django
+            locale: "pt",
+            maxDate: "today"  // opcional: para impedir datas futuras
+        });
+    </script>
 </body>
 </html>

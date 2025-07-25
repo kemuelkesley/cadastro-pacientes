@@ -7,7 +7,7 @@ from .validators import validate_nome, validate_celular, validate_data_nasciment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from datetime import time
+from datetime import datetime, time
 
 
 class ContatoForm(forms.ModelForm):
@@ -143,59 +143,41 @@ class CadastroForm(UserCreationForm):
 
 # Função para gerar opções de horário
 def gerar_horarios():
-    return [(time(h, m).strftime("%H:%M"), time(h, m).strftime("%H:%M"))
-            for h in range(7, 17) for m in (0, 30)] + [('17:00', '17:00')]
-
-
+    return [time(h, m).strftime("%H:%M") for h in range(7, 17) for m in (0, 30)] + ['17:00']
 
 class AgendamentoForm(forms.ModelForm):
-    # Substituindo o campo hora_agendamento por ChoiceField com horários válidos
-    hora_agendamento = forms.ChoiceField(
-        choices=gerar_horarios(),
-        widget=forms.Select(attrs={'class': 'form-control custom-input'}),
-        label="Hora"
-    )
+    hora_agendamento = forms.ChoiceField(choices=[], label="Hora")
 
     class Meta:
         model = Agendamento
         fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao']
         widgets = {
-            'data_agendamento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control custom-input'}),
+            'data_agendamento': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control custom-input',
+                'id': 'id_data_agendamento',
+                'min': datetime.today().strftime('%Y-%m-%d'),
+            }),
             'paciente': forms.Select(attrs={'class': 'form-control custom-input'}),
             'observacao': forms.Textarea(attrs={'class': 'form-control custom-input', 'rows': 3}),
         }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        data = cleaned_data.get('data_agendamento')
-        hora_str = cleaned_data.get('hora_agendamento')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        data = None
+        if self.data.get('data_agendamento'):
+            try:
+                data = datetime.strptime(self.data.get('data_agendamento'), "%Y-%m-%d").date()
+            except ValueError:
+                pass
 
-        if not data or not hora_str:
-            return cleaned_data  # já será tratado por validação padrão
+        horarios_disponiveis = gerar_horarios()
 
-        # Converter a string do ChoiceField para objeto time
-        try:
-            hora = time.fromisoformat(hora_str)
-        except ValueError:
-            raise forms.ValidationError("Formato de hora inválido.")
+        if data:
+            horarios_ocupados = Agendamento.objects.filter(data_agendamento=data).values_list('hora_agendamento', flat=True)
+            horarios_ocupados = [hora.strftime("%H:%M") for hora in horarios_ocupados]
+            horarios_disponiveis = [h for h in horarios_disponiveis if h not in horarios_ocupados]
 
-        # Validar se o horário está dentro da faixa permitida
-        horarios_validos = [time(h, m) for h in range(7, 17) for m in (0, 30)] + [time(17, 0)]
-        if hora not in horarios_validos:
-            raise forms.ValidationError("Horário inválido. Permitido apenas de 07:00 até 17:00 em intervalos de 30 minutos.")
-
-        # Verificar conflito
-        conflito = Agendamento.objects.filter(
-            data_agendamento=data,
-            hora_agendamento=hora
-        )
-        if self.instance.pk:
-            conflito = conflito.exclude(pk=self.instance.pk)
-
-        if conflito.exists():
-            raise forms.ValidationError("Já existe um agendamento para essa data e hora.")
-
-        # Sobrescreve a string pela instância time no cleaned_data
-        cleaned_data['hora_agendamento'] = hora
-
-        return cleaned_data
+        self.fields['hora_agendamento'].choices = [(h, h) for h in horarios_disponiveis]
+        self.fields['hora_agendamento'].widget.attrs.update({'class': 'form-control custom-input'})
