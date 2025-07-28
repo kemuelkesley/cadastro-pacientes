@@ -45,12 +45,21 @@ class Contato(models.Model):
     
 
 class Agendamento(models.Model):
+
+    STATUS_CHOICES = [
+        ('AG', 'Agendado'),
+        ('CA', 'Cancelado'),
+        ('FA', 'Faltou'),
+    ]
+
+
     paciente = models.ForeignKey(Contato ,on_delete=models.CASCADE)
     data_agendamento = models.DateField(verbose_name="Data do Agendamento")
     hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG', verbose_name="Status do Agendamento")
 
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')}"
+        return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} ({self.get_status_display()})"

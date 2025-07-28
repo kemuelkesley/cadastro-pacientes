@@ -14,7 +14,7 @@
   <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
 
   <!-- FullCalendar CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js'></script>
 
   {% include "partials/fontes.html" %}
 
@@ -61,7 +61,7 @@
                     </li>
                     <li class="nav-item ms-5 me-3">
                         <a class="nav-link text-white" href="{% url 'listar_agendamentos' %}">
-                            Listar Agendamentos
+                            Lista de Agendamentos
                         </a>
                     </li>
                     <!-- Você pode adicionar outros itens aqui -->
@@ -216,28 +216,28 @@
       });
 
       // Função para buscar horários ocupados via AJAX e atualizar o select de hora
-      function atualizarHorasDisponiveis(dataSelecionada) {
-        const campoHora = document.getElementById("id_hora_agendamento");
+      // function atualizarHorasDisponiveis(dataSelecionada) {
+      //   const campoHora = document.getElementById("id_hora_agendamento");
 
-        fetch(`/agendamentos/disponiveis/?data=${dataSelecionada}`)
-          .then(response => response.json())
-          .then(horasOcupadas => {
-            for (let option of campoHora.options) {
-              if (horasOcupadas.includes(option.value)) {
-                option.disabled = true;
-                option.textContent = `${option.value} (ocupado)`;
-              } else {
-                option.disabled = false;
-                option.textContent = option.value;
-              }
-            }
-          })
-          .catch(error => {
-            console.error("Erro ao buscar horários ocupados:", error);
-          });
-      }
+      //   fetch(`/agendamentos/disponiveis/?data=${dataSelecionada}`)
+      //     .then(response => response.json())
+      //     .then(horasOcupadas => {
+      //       for (let option of campoHora.options) {
+      //         if (horasOcupadas.includes(option.value)) {
+      //           option.disabled = true;
+      //           option.textContent = `${option.value} (ocupado)`;
+      //         } else {
+      //           option.disabled = false;
+      //           option.textContent = option.value;
+      //         }
+      //       }
+      //     })
+      //     .catch(error => {
+      //       console.error("Erro ao buscar horários ocupados:", error);
+      //     });
+      // }
 
-      // FullCalendar
+      // Configuração do FullCalendar
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -249,6 +249,9 @@
         hiddenDays: [0, 6],
         height: 'auto',
         events: '{% url "agendamentos_json" %}',
+        buttonText: {
+          today: 'Hoje',
+        },
         eventClick: function(info) {
           const paciente = info.event.title;
           const horario = new Date(info.event.start).toLocaleString('pt-BR', {

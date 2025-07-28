@@ -272,4 +272,13 @@ def agendamentos_json(request):
     return JsonResponse(eventos, safe=False)    
 
 
+@login_required
+def detalhes_paciente(request, pk):
+    paciente = get_object_or_404(Contato, pk=pk)
+    agendamentos = Agendamento.objects.filter(paciente=paciente).order_by('-data_agendamento', '-hora_agendamento')
+
+    return render(request, 'agendamento/detalhes.html', {
+        'paciente': paciente,
+        'agendamentos': agendamentos,
+    })
 

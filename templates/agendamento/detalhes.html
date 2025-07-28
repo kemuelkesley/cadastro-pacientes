@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contato</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+
+
+    {% include "partials/fontes.html" %}
+
+    <!-- css -->
+    <link rel="stylesheet" href="{% static 'assets/css/paginator.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">    
+    <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">   
+    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
+</head>
+<body>
+
+
+    {% include "partials/navbar.html" %}  
+
+
+    <!-- <section class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-calendar-week me-2"></i> Detalhes do Agendamento</h4>
+                <div class="btn-group">
+                    <a href="{% url 'listar_agendamentos' %}" class="btn btn-light text-success fw-semibold">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <h3 class="mb-4">Paciente: {{ paciente.nome }}</h3>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Nome:</strong> {{ paciente.nome }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Telefone:</strong> {{ paciente.celular }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Email:</strong> {{ paciente.email }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Data de nascimento:</strong> {{ paciente.data_nascimento |date:"d/m/Y" }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Observações:</strong> {{ paciente.observacoes|default:"Nenhuma observação" }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section> -->
+
+    <section class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i> Detalhes do Agendamento</h4>
+                <div class="btn-group">
+                    <a href="{% url 'listar_agendamentos' %}" class="btn btn-light text-success fw-semibold">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <h3 class="mb-4 text-success">
+                    <span class="badge bg-success-subtle text-success fs-5"><i class="bi bi-person-circle me-2"></i> Paciente: {{ paciente.nome }}</span>
+                </h3>
+
+                <div class="row g-3">
+                <!-- Dados fixos do paciente -->
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 bg-light">
+                    <strong><i class="bi bi-telephone-fill me-2 text-success"></i>Telefone:</strong><br>
+                    {{ paciente.celular }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 bg-light">
+                    <strong><i class="bi bi-envelope-fill me-2 text-success"></i>Email:</strong><br>
+                    {{ paciente.email }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 bg-light">
+                    <strong><i class="bi bi-calendar-event-fill me-2 text-success"></i>Data de nascimento:</strong><br>
+                    {{ paciente.data_nascimento|date:"d/m/Y" }}
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4" style="color: #1ba36f;">
+
+        <!-- Lista de agendamentos -->
+        <h5 class="text-success mt-4"><i class="bi bi-calendar3 me-2"></i>Agendamentos do Paciente</h5>
+        {% if agendamentos %}
+            <div class="list-group">
+                {% for ag in agendamentos %}
+                    <div class="list-group-item list-group-item-action mb-2 border rounded shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Data:</strong> {{ ag.data_agendamento|date:"d/m/Y" }}<br>
+                                <strong>Hora:</strong> {{ ag.hora_agendamento|time:"H:i" }}<br>
+                                <strong>Status:</strong> {{ ag.get_status_display }}<br>
+                                <strong>Observação:</strong> {{ ag.observacao|default:"—" }}
+                            </div>
+                            <a href="{% url 'detalhes_paciente' ag.paciente.id %}" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Este paciente ainda não possui agendamentos.</p>
+        {% endif %}
+
+           
+       
+    </section>
+
+
+
+    {% include "partials/footer.html" %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

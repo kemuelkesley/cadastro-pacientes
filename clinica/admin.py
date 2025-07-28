@@ -28,6 +28,7 @@ class AgendamentoAdmin(admin.ModelAdmin):
     'data_agendamento', 
     'hora_agendamento', 
     'observacao',
+    'status',
     'criado_em',
     )
 
