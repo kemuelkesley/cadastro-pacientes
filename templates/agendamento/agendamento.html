@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,21 +30,38 @@
       max-width: 100%;
       font-size: 0.75rem;
     }
-    .fc .fc-daygrid-day-frame { padding: 2px; }
-    .fc .fc-toolbar-title { font-size: 1rem; }
-    .fc .fc-button { padding: 2px 6px; font-size: 0.75rem; }
-    .fc .fc-col-header-cell-cushion { font-size: 0.75rem; }
-    .fc-daygrid-event { font-size: 0.7rem; padding: 2px; }
+
+    .fc .fc-daygrid-day-frame {
+      padding: 2px;
+    }
+
+    .fc .fc-toolbar-title {
+      font-size: 1rem;
+    }
+
+    .fc .fc-button {
+      padding: 2px 6px;
+      font-size: 0.75rem;
+    }
+
+    .fc .fc-col-header-cell-cushion {
+      font-size: 0.75rem;
+    }
+
+    .fc-daygrid-event {
+      font-size: 0.7rem;
+      padding: 2px;
+    }
   </style>
 </head>
 
 <body>
-  
-    
+
+
     <nav class="navbar navbar-expand-lg" style="background-color: #063115; color: white;">
         <div class="container-fluid">
             <a href="{% url 'index' %}" class="navbar-brand" style="font-size: 25px; color: white;">
-                <i class="bi bi-hospital-fill"></i> Clinica Vida 
+                <i class="bi bi-hospital-fill"></i> Clinica Vida
                 {% comment %} <span style="font-size: 12px;">ver-1.1</span> {% endcomment %}
             </a>
 
@@ -53,39 +71,40 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!-- Item Home -->
-                    <li class="nav-item ms-5 me-3">
-                        <a class="nav-link text-white" href="{% url 'index' %}">
-                            Home
-                        </a>
-                    </li>
-                    <li class="nav-item ms-5 me-3">
-                        <a class="nav-link text-white" href="{% url 'listar_agendamentos' %}">
-                            Lista de Agendamentos
-                        </a>
-                    </li>
-                    <!-- Você pode adicionar outros itens aqui -->
+                <!-- Item Home -->
+                <li class="nav-item ms-5 me-3">
+                    <a class="nav-link text-white" href="{% url 'index' %}">
+                    Home
+                    </a>
+                </li>
+                <li class="nav-item ms-5 me-3">
+                    <a class="nav-link text-white" href="{% url 'listar_agendamentos' %}">
+                    Lista de Agendamentos
+                    </a>
+                </li>
+                <!-- Você pode adicionar outros itens aqui -->
                 </ul>
 
                 {% if user.is_authenticated %}
-                    <div class="dropdown ms-auto">
-                        <span class="text-white me-2">Logado como:</span>
-                        <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person"></i> {{ user.username }}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/">
-                                    <i class="bi bi-person-fill-gear"></i> Administração
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'deslogar_usuario' %}">
-                                    <i class="bi bi-x-lg"></i> Sair
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="dropdown ms-auto">
+                    <span class="text-white me-2">Logado como:</span>
+                    <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-person"></i> {{ user.username }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/">
+                        <i class="bi bi-person-fill-gear"></i> Administração
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{% url 'deslogar_usuario' %}">
+                        <i class="bi bi-x-lg"></i> Sair
+                        </a>
+                    </li>
+                    </ul>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -116,18 +135,18 @@
           <!-- FORMULÁRIO -->
           <div class="col-md-6 mb-4">
             {% if form.errors %}
-              <div class="alert alert-danger">
-                <ul class="mb-0">
-                  {% for field in form %}
-                    {% for error in field.errors %}
-                      <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                    {% endfor %}
-                  {% endfor %}
-                  {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
             {% endif %}
 
             <form method="POST" novalidate>
@@ -194,25 +213,25 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        // Flatpickr com bloqueio de sábado e domingo e datas anteriores ao dia atual
-        flatpickr("#id_data_agendamento", {
-          dateFormat: "Y-m-d",
-          altInput: true,
-          altFormat: "d/m/Y",
-          locale: "pt",
-          minDate: "today",
-          disable: [
-            function(date) {
-              return (date.getDay() === 0 || date.getDay() === 6);
-            }
-          ],
-          onChange: function(selectedDates, dateStr) {
-            if (dateStr) {
-              atualizarHorasDisponiveis(dateStr);
-            }
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Flatpickr com bloqueio de sábado e domingo e datas anteriores ao dia atual
+      flatpickr("#id_data_agendamento", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        locale: "pt",
+        minDate: "today",
+        disable: [
+          function (date) {
+            return (date.getDay() === 0 || date.getDay() === 6);
           }
+        ],
+        onChange: function (selectedDates, dateStr) {
+          if (dateStr) {
+            atualizarHorasDisponiveis(dateStr);
+          }
+        }
       });
 
       // Função para buscar horários ocupados via AJAX e atualizar o select de hora
@@ -252,7 +271,7 @@
         buttonText: {
           today: 'Hoje',
         },
-        eventClick: function(info) {
+        eventClick: function (info) {
           const paciente = info.event.title;
           const horario = new Date(info.event.start).toLocaleString('pt-BR', {
             hour: '2-digit', minute: '2-digit'
@@ -266,8 +285,9 @@
       });
       calendar.render();
     });
-  </script>   
+  </script>
 
-  
+
 </body>
+
 </html>

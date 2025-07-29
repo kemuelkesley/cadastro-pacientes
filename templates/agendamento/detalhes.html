@@ -40,44 +40,58 @@
             </div>
             <div class="card-body p-4">
                 <h3 class="mb-4 text-success">
-                    <span class="badge bg-success-subtle text-success fs-5"><i class="bi bi-person-circle me-2"></i> Paciente: {{ paciente.nome }}</span>
+                    <span class="badge bg-success-subtle text-success fs-5">
+                        <i class="bi bi-person-circle me-2"></i> Paciente: {{ paciente.nome }}
+                    </span>
                 </h3>
 
                 <div class="row g-3">
-                <!-- Dados fixos do paciente -->
-            <div class="col-md-6">
-                <div class="border rounded-3 p-3 bg-light">
-                    <strong><i class="bi bi-telephone-fill me-2 text-success"></i>Telefone:</strong><br>
-                    {{ paciente.celular }}
+                    <!-- Dados fixos do paciente -->
+                    <div class="col-md-6">
+                        <div class="border rounded-3 p-3 bg-light">
+                            <strong><i class="bi bi-telephone-fill me-2 text-success"></i>Telefone:</strong><br>
+                            {{ paciente.celular }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded-3 p-3 bg-light">
+                            <strong><i class="bi bi-envelope-fill me-2 text-success"></i>Email:</strong><br>
+                            {{ paciente.email }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded-3 p-3 bg-light">
+                            <strong><i class="bi bi-calendar-event-fill me-2 text-success"></i>Data de nascimento:</strong><br>
+                            {{ paciente.data_nascimento|date:"d/m/Y" }}
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="border rounded-3 p-3 bg-light">
-                    <strong><i class="bi bi-envelope-fill me-2 text-success"></i>Email:</strong><br>
-                    {{ paciente.email }}
+                <hr class="my-4" style="color: #1ba36f;">
+
+                <!-- Filtro de status -->
+                <div class="mb-4">
+                    <label for="filtroStatus" class="form-label">
+                        <span class="badge bg-success-subtle text-success fs-5">
+                            <i class="bi bi-funnel me-2"></i>Filtrar por status:
+                        </span>
+                    </label>
+                    <select id="filtroStatus" class="form-select w-auto custom-input">
+                        <option value="todos">Todos</option>
+                        <option value="AG">Agendado</option>
+                        <option value="CA">Cancelado</option>
+                        <option value="FA">Faltou</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="border rounded-3 p-3 bg-light">
-                    <strong><i class="bi bi-calendar-event-fill me-2 text-success"></i>Data de nascimento:</strong><br>
-                    {{ paciente.data_nascimento|date:"d/m/Y" }}
-                </div>
-            </div> 
-           
-        </div>
-
-
-
-        <hr class="my-4" style="color: #1ba36f;">
 
                 <!-- Lista de agendamentos -->
                 <h5 class="text-success mt-4"><i class="bi bi-calendar3 me-2"></i>Agendamentos do Paciente</h5>
                 {% if agendamentos %}
                     <div class="list-group">
                         {% for ag in agendamentos %}
-                            <div class="list-group-item list-group-item-action mb-2 border rounded shadow-sm">
+                            <div class="list-group-item list-group-item-action mb-2 border rounded shadow-sm" data-status="{{ ag.status }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>Data:</strong> {{ ag.data_agendamento|date:"d/m/Y" }}<br>
@@ -103,18 +117,18 @@
 
                             <!-- Modal de Edição -->
                             <div class="modal fade" id="editarModal{{ ag.id }}" tabindex="-1" aria-labelledby="editarModalLabel{{ ag.id }}" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <form method="POST" action="{% url 'editar_agendamento' ag.id %}">
                                             {% csrf_token %}
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="editarModalLabel{{ ag.id }}">Editar Agendamento</h5>
+                                            <div class="modal-header bg-success text-white">
+                                                <h5 class="modal-title w-100 text-center" id="editarModalLabel{{ ag.id }}">Editar Agendamento</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label for="status{{ ag.id }}" class="form-label">Status</label>
-                                                    <select class="form-select" id="status{{ ag.id }}" name="status">
+                                                    <select class="form-select custom-input" id="status{{ ag.id }}" name="status">
                                                         <option value="AG" {% if ag.status == 'AG' %}selected{% endif %}>Agendado</option>
                                                         <option value="CA" {% if ag.status == 'CA' %}selected{% endif %}>Cancelado</option>
                                                         <option value="FA" {% if ag.status == 'FA' %}selected{% endif %}>Faltou</option>
@@ -122,12 +136,12 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="observacao{{ ag.id }}" class="form-label">Observação</label>
-                                                    <textarea class="form-control" id="observacao{{ ag.id }}" name="observacao" rows="3">{{ ag.observacao }}</textarea>
+                                                    <textarea class="form-control custom-input" id="observacao{{ ag.id }}" name="observacao" rows="3">{{ ag.observacao }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                            <button type="submit" class="btn btn-outline-success">Salvar</button>
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-outline-success">Salvar</button>
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                                             </div>
                                         </form>
                                     </div>
@@ -136,11 +150,29 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted">Este paciente ainda não possui agendamentos.</p>
+                    <div class="alert alert-warning mt-3">Este paciente ainda não possui agendamentos.</div>
                 {% endif %}
             </div>
         </div>
     </section>
+
+    <!-- Script de filtragem por status -->
+    <script>
+        document.getElementById('filtroStatus').addEventListener('change', function () {
+            const statusSelecionado = this.value;
+            const agendamentos = document.querySelectorAll('.list-group-item[data-status]');
+
+            agendamentos.forEach(item => {
+                const status = item.getAttribute('data-status');
+                if (statusSelecionado === 'todos' || status === statusSelecionado) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
 
 
 

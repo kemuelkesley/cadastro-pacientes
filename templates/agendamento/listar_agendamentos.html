@@ -140,7 +140,7 @@
                                 <th>Data</th>
                                 <th>Hora</th>
                                 <th>Status</th>
-                                <th>Ações</th>
+                                <th>Detalhes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -154,7 +154,7 @@
                                         <!-- <a href="#" class="btn btn-sm btn-warning">
                                             <i class="bi bi-pencil"></i>
                                         </a> -->
-                                        <a href="{% url 'detalhes_paciente' ag.paciente.pk %}" class="btn btn-sm btn-warning">
+                                        <a href="{% url 'detalhes_paciente' ag.paciente.pk %}" class="btn btn-sm btn-warning" title="Exibir detalhes do paciente">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir este agendamento?')">
