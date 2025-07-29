@@ -8,6 +8,8 @@ from django.core.paginator import Paginator
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_POST
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -282,3 +284,12 @@ def detalhes_paciente(request, pk):
         'agendamentos': agendamentos,
     })
 
+
+@require_POST
+def editar_agendamento(request, agendamento_id):
+    agendamento = get_object_or_404(Agendamento, id=agendamento_id)
+    agendamento.status = request.POST.get('status')
+    agendamento.observacao = request.POST.get('observacao')
+    agendamento.save()
+    
+    return redirect('detalhes_paciente', agendamento.paciente.id)

@@ -154,12 +154,12 @@ class AgendamentoForm(forms.ModelForm):
         widgets = {
             'data_agendamento': forms.DateInput(attrs={
                 'type': 'date',
-                'class': 'form-control custom-input',
+                'class': 'form-control custom-input', 'placeholder': 'Selecione a data',
                 'id': 'id_data_agendamento',
                 'min': datetime.today().strftime('%Y-%m-%d'),
             }),
             'paciente': forms.Select(attrs={'class': 'form-control custom-input'}),
-            'observacao': forms.Textarea(attrs={'class': 'form-control custom-input', 'rows': 3}),
+            'observacao': forms.Textarea(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira observações', 'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
