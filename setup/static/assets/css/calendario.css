@@ -1,0 +1,26 @@
+ #calendar {
+    max-width: 100%;
+    font-size: 0.75rem;
+ }
+
+ .fc .fc-daygrid-day-frame {
+    padding: 2px;
+ }
+
+ .fc .fc-toolbar-title {
+    font-size: 1rem;
+ }
+
+ .fc .fc-button {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+ }
+
+ .fc .fc-col-header-cell-cushion {
+    font-size: 0.75rem;
+ }
+
+ .fc-daygrid-event {
+     font-size: 0.7rem;
+     padding: 2px;
+ }

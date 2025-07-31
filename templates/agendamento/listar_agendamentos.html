@@ -18,15 +18,56 @@
     {% include "partials/fontes.html" %}
 
     <!-- css -->
-    <link rel="stylesheet" href="{% static 'assets/css/paginator.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/tabela.css' %}">    
-    <link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">   
+     
+    <link rel="stylesheet" href="{% static 'assets/css/navbar.css' %}">      
     <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
 </head>
 <body>
 
 
-    {% include "partials/navbar.html" %}  
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a href="{% url 'index' %}" class="navbar-brand">
+                <i class="bi bi-hospital-fill"></i> Clínica Vida
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="{% url 'index' %}">Início</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="{% url 'listar_agendamentos' %}">Lista de Agendamentos</a>
+                    </li>                    
+                </ul>
+
+
+                {% if user.is_authenticated %}
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/">
+                                    <i class="bi bi-person-fill-gear"></i> Administração
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'deslogar_usuario' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Sair
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
 
 
     {% if messages %}
@@ -39,64 +80,6 @@
         {% endfor %}
       </div>
     {% endif %}
-
-    <!-- <div class="container mt-5">
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-calendar-week me-2"></i> Lista de Agendamentos</h4>
-                <div class="btn-group">
-                    <a href="{% url 'agendar_consulta' %}" class="btn btn-light text-success fw-semibold">
-                        <i class="bi bi-plus-circle"></i> Novo
-                    </a>
-                    <a href="#" class="btn btn-light text-success fw-semibold">
-                        <i class="bi bi-file-earmark-pdf"></i> PDF
-                    </a>
-                    <a href="#" class="btn btn-light text-success fw-semibold">
-                        <i class="bi bi-file-earmark-excel"></i> Excel
-                    </a>
-                </div>
-            </div>
-            <div class="card-body p-4">
-
-                {% if agendamentos %}
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover align-middle">
-                            <thead class="table-success">
-                                <tr>
-                                    <th>Paciente</th>
-                                    <th>Data</th>
-                                    <th>Hora</th>
-                                    <th>Observação</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ag in agendamentos %}
-                                    <tr>
-                                        <td>{{ ag.paciente.nome }}</td>
-                                        <td>{{ ag.data_agendamento|date:"d/m/Y" }}</td>
-                                        <td>{{ ag.hora_agendamento|time:"H:i" }}</td>
-                                        <td>{{ ag.observacao|default:"—" }}</td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir este agendamento?')">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p class="text-muted">Nenhum agendamento encontrado.</p>
-                {% endif %}
-
-            </div>
-        </div>
-    </div> -->
 
   <div class="container mt-5">
     <div class="card shadow-lg border-0 rounded-4">
@@ -192,5 +175,17 @@
             maxDate: "today"  // opcional: para impedir datas futuras
         });
     </script>
+    <script>
+        // Espera 5 segundos (5000ms) e esconde todos os alerts
+        setTimeout(function () {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+            // Usa fade do Bootstrap (com classe fade + show)
+            alert.classList.remove('show');
+            alert.classList.add('hide');
+            });
+        }, 10000); // tempo em milissegundos
+    </script>
+
 </body>
 </html>
