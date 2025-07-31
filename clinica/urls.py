@@ -1,7 +1,24 @@
 from django.urls import path
-from clinica.views import cadastro, sucesso, deletar_contato, ClinicaListView ,ClinicaUpdateView, cadastrar_usuario, index, login, deslogar_usuario,logar_usuario, agendar_consulta, listar_agendamentos, agendamentos_json, detalhes_paciente, editar_agendamento
+from clinica.views import (
+   cadastro,
+   sucesso, 
+   deletar_contato, 
+   ClinicaListView, 
+   ClinicaUpdateView, 
+   cadastrar_usuario, 
+   index, 
+   login, 
+   deslogar_usuario, 
+   logar_usuario, 
+   agendar_consulta, 
+   listar_agendamentos, 
+   agendamentos_json, 
+   detalhes_paciente, 
+   editar_agendamento
+)
 
 
+# URL patterns for the clinica app
 urlpatterns = [
    path('logar_usuario/', logar_usuario, name="logar_usuario"),
    path('cadastrar_usuario/', cadastrar_usuario, name="cadastrar_usuario"),
@@ -16,7 +33,5 @@ urlpatterns = [
    path('listar_agendamentos/', listar_agendamentos, name='listar_agendamentos'),
    path('agendamentos-json/',  agendamentos_json, name='agendamentos_json'),
    path('paciente/<int:pk>/', detalhes_paciente, name='detalhes_paciente'),
-   path('agendamento/<int:agendamento_id>/editar/', editar_agendamento, name='editar_agendamento'),
-
-   # Adicione outras URLs conforme necessário
+   path('agendamento/<int:agendamento_id>/editar/', editar_agendamento, name='editar_agendamento'),   
 ]

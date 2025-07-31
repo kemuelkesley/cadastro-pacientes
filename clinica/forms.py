@@ -7,7 +7,7 @@ from .validators import validate_nome, validate_celular, validate_data_nasciment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from datetime import datetime, time
+from datetime import datetime, date, time
 
 
 class ContatoForm(forms.ModelForm):
@@ -101,44 +101,6 @@ class CadastroForm(UserCreationForm):
         model = User
         fields = ['username', 'password1', 'password2']
 
-    # def __init__(self, *args, **kwargs):
-    #     super(CadastroForm, self).__init__(*args, **kwargs)
-    #     self.fields['username'].widget.attrs.update({'class': 'form-control'})
-    #     self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-    #     self.fields['password2'].widget.attrs.update({'class': 'form-control'})
-
-
-# class AgendamentoForm(forms.ModelForm):
-#     class Meta:
-#         model = Agendamento
-#         fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao']
-#         widgets = {
-#             'data_agendamento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-#             'hora_agendamento': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-#             'paciente': forms.Select(attrs={'class': 'form-control'}),
-#             'observacao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-#         }
-
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         data = cleaned_data.get('data_agendamento')
-#         hora = cleaned_data.get('hora_agendamento')
-
-#         if data and hora:
-#             conflito = Agendamento.objects.filter(
-#                 data_agendamento=data,
-#                 hora_agendamento=hora
-#             )
-
-#             # Ignora o próprio agendamento ao editar
-#             if self.instance.pk:
-#                 conflito = conflito.exclude(pk=self.instance.pk)
-
-#             if conflito.exists():
-#                 raise forms.ValidationError("Já existe um agendamento para essa data e hora.")
-
-#         return cleaned_data
-
 
 
 # Função para gerar opções de horário
@@ -181,3 +143,16 @@ class AgendamentoForm(forms.ModelForm):
 
         self.fields['hora_agendamento'].choices = [(h, h) for h in horarios_disponiveis]
         self.fields['hora_agendamento'].widget.attrs.update({'class': 'form-control custom-input'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get('data_agendamento')
+        hora_str = cleaned_data.get('hora_agendamento')
+
+        if data and hora_str:
+            hora = time.fromisoformat(hora_str)
+
+            if data == date.today() and hora <= datetime.now().time():
+                raise forms.ValidationError("Você não pode agendar para um horário que já passou hoje.")
+
+        return cleaned_data    

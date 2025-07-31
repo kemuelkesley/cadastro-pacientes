@@ -150,16 +150,13 @@
                                     <td>{{ ag.data_agendamento|date:"d/m/Y" }}</td>
                                     <td>{{ ag.hora_agendamento|time:"H:i" }}</td>
                                     <td>{{ ag.get_status_display|default:"—" }}</td>
-                                    <td>
-                                        <!-- <a href="#" class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i>
-                                        </a> -->
+                                    <td>                                        
                                         <a href="{% url 'detalhes_paciente' ag.paciente.pk %}" class="btn btn-sm btn-warning" title="Exibir detalhes do paciente">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir este agendamento?')">
+                                        <!-- <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir este agendamento?')">
                                             <i class="bi bi-trash"></i>
-                                        </a>
+                                        </a> -->
                                     </td>
                                 </tr>
                             {% endfor %}

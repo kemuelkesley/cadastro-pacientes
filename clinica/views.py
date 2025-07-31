@@ -245,14 +245,11 @@ def listar_agendamentos(request):
         except ValueError:
             data = now().date()
     else:
-        data = now().date()  # Se não for passado nada, mostra o dia atual
+        data = now().date() 
 
     agendamentos_list = Agendamento.objects.filter(data_agendamento=data).order_by('hora_agendamento')
 
-    # paginator = Paginator(agendamentos_list, 8)
-    # page_number = request.GET.get('page')
-    # agendamentos = paginator.get_page(page_number)
-
+   
     return render(request, 'agendamento/listar_agendamentos.html', {
         'agendamentos': agendamentos_list
     })
