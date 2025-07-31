@@ -12,15 +12,41 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    
-    
-
     {% include "partials/fontes.html" %}
-    {% include "partials/navbar.html" %}
 
-   
+    <style>
+        .bi-heart-pulse-fill {
+            font-size: 5rem;
+        }
+        .welcome-section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .welcome-section h1 span {
+            color: #198754; /* verde Bootstrap */
+        }
+        .btn-green {
+            background-color: #198754;
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: #146c43;
+            color: white;
+        }
+        .btn-blue {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-blue:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+
+    {% include "partials/navbar.html" %}
 
     <!-- Seção de Boas-Vindas -->
     <section class="welcome-section">
@@ -47,7 +73,7 @@
                         <a href="{% url 'clinica_list' %}" class="btn btn-green">Ir para Cadastro</a>
                     </div>
                 </div>
-            </div>
+            </div>           
 
             <!-- Agendar Consulta -->
             <div class="col-md-5 col-lg-4">
@@ -65,6 +91,17 @@
         </div>
     </div>
 
+    <!-- Seção KemSoftware com ícone de saúde -->
+    <section class="text-center py-5">
+        <div class="container">
+            <i class="bi bi-heart-pulse-fill text-success mb-3"></i>
+            <h2 class="fw-bold text-success">KemSoftware</h2>
+            <p class="lead text-muted">Tecnologia a serviço da sua saúde</p>
+        </div>
+    </section>
+
+
+    {% include "partials/footer.html" %}
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
