@@ -1,22 +1,7 @@
-body {
-    margin: 0;
-    padding: 0;    
-    background-color: #f4f4f4;
+.table-success > tbody > tr {
+    background-color: #198754 !important;
+    
 }
-
-
-.contorno_table {
-    /* border-color: #1ebc55; */
-    border-color: #228b47;
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 15px;
-}
-
-.table-striped tbody tr:nth-child(odd) {
-    background-color: #f2f2f2; /* Cor de fundo para linhas ímpares */
-}
-
-.table-striped tbody tr:nth-child(even) {
-    background-color: #ffffff; /* Cor de fundo para linhas pares */
-}
+.table-success > tbody > tr:hover {
+    background-color: #157347 !important;
+}    
