@@ -21,6 +21,7 @@
      
     <link rel="stylesheet" href="{% static 'assets/css/navbar.css' %}">      
     <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
+    <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">    
 </head>
 <body>
 
@@ -68,6 +69,14 @@
             </div>
         </div>
     </nav>
+
+
+     <!-- Loader -->
+    <div id="loader" class="loading">    
+        <div class="spinner-border text-success" role="status" style="width: 4rem; height: 4rem;">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
 
 
     {% if messages %}
@@ -186,6 +195,18 @@
             });
         }, 10000); // tempo em milissegundos
     </script>
+
+    <script>
+        // Esconde o loader depois que a página estiver totalmente carregada
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            loader.style.transition = 'opacity 0.7s ease';
+
+            setTimeout(() => loader.style.display = 'none', 500); 
+        });
+    </script>
+
 
 </body>
 </html>

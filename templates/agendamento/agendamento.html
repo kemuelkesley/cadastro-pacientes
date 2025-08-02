@@ -25,12 +25,12 @@
     <link rel="stylesheet" href="{% static 'assets/css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/calendario.css' %}">
-  
-  
+    <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
+
+
 </head>
 
-<body>
-    
+<body>    
 
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -76,8 +76,12 @@
         </div>
     </nav>
 
-
-
+    <!-- Loader -->
+    <div id="loader" class="loading">    
+        <div class="spinner-border text-success" role="status" style="width: 4rem; height: 4rem;">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
 
 
   <div class="container mt-5">
@@ -201,28 +205,6 @@
         }
       });
 
-      // Função para buscar horários ocupados via AJAX e atualizar o select de hora
-      // function atualizarHorasDisponiveis(dataSelecionada) {
-      //   const campoHora = document.getElementById("id_hora_agendamento");
-
-      //   fetch(`/agendamentos/disponiveis/?data=${dataSelecionada}`)
-      //     .then(response => response.json())
-      //     .then(horasOcupadas => {
-      //       for (let option of campoHora.options) {
-      //         if (horasOcupadas.includes(option.value)) {
-      //           option.disabled = true;
-      //           option.textContent = `${option.value} (ocupado)`;
-      //         } else {
-      //           option.disabled = false;
-      //           option.textContent = option.value;
-      //         }
-      //       }
-      //     })
-      //     .catch(error => {
-      //       console.error("Erro ao buscar horários ocupados:", error);
-      //     });
-      // }
-
       // Configuração do FullCalendar
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -236,7 +218,7 @@
         height: 'auto',
         events: '{% url "agendamentos_json" %}',
         buttonText: {
-          today: 'Hoje',
+        today: 'Hoje',
         },
         eventClick: function (info) {
           const paciente = info.event.title;
@@ -253,6 +235,17 @@
       calendar.render();
     });
   </script>
+
+  <script>
+        // Esconde o loader depois que a página estiver totalmente carregada
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            loader.style.transition = 'opacity 0.7s ease';
+
+            setTimeout(() => loader.style.display = 'none', 500); 
+        });
+    </script>
 
 
 </body>
