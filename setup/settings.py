@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'clinica.middleware.AutoLogoutMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -165,5 +166,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'logar_usuario'
 LOGIN_REDIRECT_URL = 'logar_usuario'
 
-# Fazer a sessão expirar em 30 minutos
-SESSION_COOKIE_AGE = 1800
+# Tempo de expiração da sessão em segundos (30 minutos)
+SESSION_COOKIE_AGE = 1800  
+
+# Expira a sessão ao fechar o navegador (opcional)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Renova a sessão a cada requisição (para prolongar caso o usuário esteja ativo)
+SESSION_SAVE_EVERY_REQUEST = False  # <- mantenha False para que a sessão expire se estiver inativo
