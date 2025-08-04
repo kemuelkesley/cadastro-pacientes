@@ -1,6 +1,6 @@
-.pagination {
-    display: flex;
-    /* justify-content: center; */
+/* CSS Bootstrap for Paginator */
+/* .pagination {
+    display: flex;  
     margin-top: 20px;
 }
 
@@ -8,8 +8,7 @@
     display: inline-block;
     padding: 8px 10px;
     margin: 0 4px;
-    margin-bottom: 15px;
-    /* border: 1px solid #ddd; */
+    margin-bottom: 15px;    
     border: 1px solid #181212;
     background-color: #f9f9f9;
     color: #333;
@@ -20,6 +19,37 @@
 
 
 .step-links a:hover {
+    background-color: #198754;    
+} */
+
+
+/* CSS de acordo com cores do sistema. */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.page-item .page-link {
+    color: #198754; /* Verde principal */
+    border: 1px solid #198754;
+    background-color: #fff;
+    margin: 0 4px;
+    padding: 8px 12px;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-item .page-link:hover {
     background-color: #198754;
-    /* 228b47 */
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Página ativa (atual) */
+.page-item.active .page-link {
+    background-color: #198754;
+    color: white;
+    border: 1px solid #198754;
 }
