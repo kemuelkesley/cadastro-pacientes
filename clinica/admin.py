@@ -7,6 +7,7 @@ class ContatoAdmin(admin.ModelAdmin):
     list_display = ('id', 
     'nome', 
     'email', 
+    'cpf',
     'data_nascimento', 
     'celular', 
     'data_criacao',

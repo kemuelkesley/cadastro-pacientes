@@ -3,7 +3,7 @@ from django import forms
 from clinica.models import Contato, Agendamento
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
-from .validators import validate_nome, validate_celular, validate_data_nascimento
+from .validators import validate_nome, validate_celular, validate_data_nascimento, validate_cpf
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -19,7 +19,7 @@ class ContatoForm(forms.ModelForm):
         validators=[validate_nome],
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input', 
-            'placeholder': 'Digite seu nome',
+            'placeholder': 'Nome completo',
         }),          
     )
         
@@ -27,8 +27,22 @@ class ContatoForm(forms.ModelForm):
         label='E-mail', 
         max_length=50,
         required=True,  
-        widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira seu email'}),            
+        widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'email@exemplo.com'}),            
     )    
+
+    cpf = forms.CharField(
+        label='CPF',
+        max_length=14,
+        required=True,
+        validators=[validate_cpf],        
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input', 
+            'placeholder': '000.000.000-00', 
+            'data-mask': '000.000.000-00', 
+            'id': 'id_cpf'
+        }),
+    )
+
 
     data_nascimento = forms.DateField(
         label='Data de Nascimento', 
@@ -55,12 +69,80 @@ class ContatoForm(forms.ModelForm):
             'placeholder': '(00) 0000-0000'
         }),
     )
-   
+
+    rua = forms.CharField(
+        label='Rua',
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Nome da rua',
+        }),
+    )
+
+    numero = forms.CharField(
+        label ='Número',
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input', 
+            'placeholder': '123',
+        })
+    )
+
+    bairro = forms.CharField(
+        label='Bairro',
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Nome do bairro',
+        }),
+    )
+    
+
+    cep = forms.CharField(
+        label='CEP',
+        max_length=9,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'data-mask':"00000-000",
+            'placeholder': '00000-000'
+        }),
+    )
+
+    estado = forms.CharField(
+        label='Estado',
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Estado',
+        }),
+    )
+
+    uf = forms.CharField(
+        label='UF',
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'UF',
+        }),
+    )
+
 
     class Meta:
         model = Contato
-        fields = ['nome', 'email', 'data_nascimento', 'celular']
- 
+        fields = [
+            'nome',
+            'email', 
+            'cpf', 
+            'data_nascimento', 
+            'celular', 
+            'cep', 
+            'rua', 
+            'numero', 
+            'bairro', 
+            'estado', 
+            'uf'
+        ]
 
 
 

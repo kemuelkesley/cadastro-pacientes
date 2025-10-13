@@ -9,8 +9,13 @@ from django.utils import timezone
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
+    cpf = models.CharField(max_length=14, unique=True, null=True, verbose_name="CPF")
     data_nascimento = models.DateField(verbose_name="Data de Nascimento")
     celular = PhoneNumberField(region='BR') 
+    rua = models.CharField(max_length=40, verbose_name="Rua", blank=True, null=True)
+    numero = models.CharField(max_length=10, verbose_name="Número", blank=True, null=True)
+    bairro = models.CharField(max_length=30, verbose_name="Bairro", blank=True, null=True)
+    cep = models.CharField(max_length=9, verbose_name="CEP", blank=True, null=True)
 
     ativo = models.BooleanField(default=True)
     data_criacao = models.DateTimeField(verbose_name="Data de Criação", auto_now_add=True)
@@ -24,7 +29,7 @@ class Contato(models.Model):
     data_exclusao = models.DateTimeField(verbose_name="Data de Exclusão",null=True, blank=True)
     usuario_exclusao = models.ForeignKey(
         User, 
-        verbose_name="Quem excluiu?",
+        verbose_name="Quem excluiu?",   
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True, 
