@@ -16,6 +16,8 @@ class Contato(models.Model):
     numero = models.CharField(max_length=10, verbose_name="Número", blank=True, null=True)
     bairro = models.CharField(max_length=30, verbose_name="Bairro", blank=True, null=True)
     cep = models.CharField(max_length=9, verbose_name="CEP", blank=True, null=True)
+    estado = models.CharField(max_length=30, verbose_name="Estado", blank=True, null=True)
+    uf = models.CharField(max_length=2, verbose_name="UF", blank=True, null=True)
 
     ativo = models.BooleanField(default=True)
     data_criacao = models.DateTimeField(verbose_name="Data de Criação", auto_now_add=True)

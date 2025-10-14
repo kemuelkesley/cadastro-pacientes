@@ -82,7 +82,7 @@ class ClinicaListView(LoginRequiredMixin,ListView):
 
 class ClinicaUpdateView(UpdateView):
     model = Contato
-    fields = ["nome", "email", "cpf", "data_nascimento", "celular", "cep", "rua", "numero", "bairro"]
+    fields = ["nome", "email", "cpf", "data_nascimento", "celular", "cep", "rua", "numero", "bairro", "estado", "uf"]
     success_url = reverse_lazy("clinica_list")
     template_name = "clinica/editar_contato.html"
 
@@ -93,7 +93,7 @@ class ClinicaUpdateView(UpdateView):
         # Adiciona validador customizado ao campo "nome"
         form.fields["nome"].validators.append(validate_nome)
         form.fields["celular"].validators.append(validate_celular)
-        form.fields["data_nascimento"].validators.append(validate_data_nascimento)
+        form.fields["data_nascimento"].validators.append(validate_data_nascimento)        
 
         # Adiciona classes CSS aos campos do formulário
         form.fields["nome"].widget.attrs["class"] = "form-control custom-input"
@@ -105,6 +105,9 @@ class ClinicaUpdateView(UpdateView):
         form.fields["rua"].widget.attrs["class"] = "form-control custom-input"
         form.fields["numero"].widget.attrs["class"] = "form-control custom-input"
         form.fields["bairro"].widget.attrs["class"] = "form-control custom-input"
+        form.fields["estado"].widget.attrs["class"] = "form-control custom-input"
+        form.fields["uf"].widget.attrs["class"] = "form-control custom-input"
+
         return form
 
     def form_valid(self, form):

@@ -82,10 +82,18 @@
                 <p class="text-center">Tem certeza de que deseja excluir este paciente?</p>
 
                 <ul class="list-group list-group-flush custom-list mb-4">
+                    {% if contato == None %}{% endif %}
                     <li class="list-group-item"><strong>Nome:</strong> {{ contato.nome }}</li>
                     <li class="list-group-item"><strong>Email:</strong> {{ contato.email }}</li>
                     <li class="list-group-item"><strong>Data de Nascimento:</strong> {{ contato.data_nascimento | date:"d/m/Y" }}</li>
-                    <li class="list-group-item"><strong>Celular:</strong> {{ contato.celular }}</li>
+                    <li class="list-group-item"><strong>Celular:</strong> {{ contato.celular }} </li>
+                    <li class="list-group-item"><strong>CEP:</strong> {{ contato.cep|default:"Não informado" }}</li>
+                    <li class="list-group-item"><strong>Estado:</strong> {{ contato.estado|default:"Não informado" }}</li>
+                    <li class="list-group-item"><strong>UF:</strong> {{ contato.uf|default:"Não informado" }}</li>
+                    <li class="list-group-item"><strong>Rua:</strong> {{ contato.rua|default:"Não informado" }}</li>
+                    <li class="list-group-item"><strong>Número:</strong> {{ contato.numero|default:"Não informado" }}</li>
+                    <li class="list-group-item"><strong>Bairro:</strong> {{ contato.bairro|default:"Não informado" }}</li>
+                                    
                 </ul>
 
                 <form class="deleteForm text-center" method="POST" action="{% url 'deletar_contato' contato.pk %}">
@@ -106,3 +114,4 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
+
