@@ -21,7 +21,7 @@ import datetime
 
 
 # Autenticação
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 
 
@@ -89,6 +89,7 @@ class ClinicaUpdateView(UpdateView):
     # tem um certo controle no formulario de editar contato
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        
 
         # Adiciona validador customizado ao campo "nome"
         form.fields["nome"].validators.append(validate_nome)
