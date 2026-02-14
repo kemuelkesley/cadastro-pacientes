@@ -1,9 +1,10 @@
 import datetime
+import json
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from .forms import AgendamentoForm, ContatoForm, CadastroForm
-from .models import Contato
+from .models import Contato, Especialidade, Medico, MedicoEspecialidade
 from django.core.paginator import Paginator
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
@@ -297,3 +298,71 @@ def editar_agendamento(request, agendamento_id):
     agendamento.save()
     
     return redirect('detalhes_paciente', agendamento.paciente.id)
+
+
+
+
+@login_required
+def medico_create(request):
+    if request.method == "POST":
+        nome = request.POST.get("nome", "").strip()
+        crm = request.POST.get("crm", "").strip()
+        uf_crm = request.POST.get("uf_crm", "").strip().upper()
+        email = request.POST.get("email", "").strip() or None
+        celular = request.POST.get("celular", "").strip() or None
+        ativo = True if request.POST.get("ativo") == "on" else False
+        especialidades_ids = request.POST.getlist("especialidades")
+
+        if not especialidades_ids:
+            messages.error(request, "Selecione pelo menos 1 especialidade.")
+            return redirect("medico_create")
+
+        try:
+            medico = Medico.objects.create(
+                nome=nome,
+                crm=crm,
+                uf_crm=uf_crm,
+                email=email,
+                celular=celular,
+                ativo=ativo,
+            )
+
+            for esp_id in especialidades_ids:
+                MedicoEspecialidade.objects.get_or_create(
+                    medico=medico,
+                    especialidade_id=esp_id,
+                    defaults={"duracao_minutos": 30, "ativo": True}
+                )
+
+            messages.success(request, "Médico cadastrado com sucesso!")
+            return redirect("medico_list")
+            
+
+        except Exception as e:
+            messages.error(request, f"Erro ao cadastrar médico: {str(e)}")
+
+    especialidades = Especialidade.objects.filter(ativo=True).order_by("nome")
+    return render(request, "clinica/medico_form.html", {"especialidades": especialidades})
+
+
+@require_POST
+@login_required
+def especialidade_create_ajax(request):
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+        nome = (payload.get("nome") or "").strip()
+
+        if not nome:
+            return JsonResponse({"error": "Nome é obrigatório."}, status=400)
+
+        esp, created = Especialidade.objects.get_or_create(nome=nome, defaults={"ativo": True})
+        if not created and not esp.ativo:
+            esp.ativo = True
+            esp.save()
+
+        return JsonResponse({"id": esp.id, "nome": esp.nome}, status=201)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido."}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

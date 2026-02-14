@@ -14,7 +14,9 @@ from clinica.views import (
    listar_agendamentos, 
    agendamentos_json, 
    detalhes_paciente, 
-   editar_agendamento
+   editar_agendamento,
+   medico_create,
+   especialidade_create_ajax
 )
 
 
@@ -34,4 +36,6 @@ urlpatterns = [
    path('agendamentos-json/',  agendamentos_json, name='agendamentos_json'),
    path('paciente/<int:pk>/', detalhes_paciente, name='detalhes_paciente'),
    path('agendamento/<int:agendamento_id>/editar/', editar_agendamento, name='editar_agendamento'),   
+   path("medicos/novo/", medico_create, name='medico_create'),
+   path("especialidades/ajax/criar", especialidade_create_ajax ,name='especialidade_create_ajax'),
 ]
