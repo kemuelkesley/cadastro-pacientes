@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -51,22 +52,175 @@ class Contato(models.Model):
         return self.nome
     
 
-class Agendamento(models.Model):
 
+class Especialidade(models.Model):
+    nome = models.CharField(max_length=50, unique=True)
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Especialidade"
+        verbose_name_plural = "Especialidades"
+        ordering = ["nome"]
+
+
+    def __str__(self):
+        return self.nome
+
+
+
+class Medico(models.Model):
+    nome = models.CharField(max_length=120)
+    crm = models.CharField(max_length=20)
+    uf_crm = models.CharField(max_length=2)
+    email = models.EmailField(blank=True, null=True)
+    celular = PhoneNumberField(region='BR')
+
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+    especialidades = models.ManyToManyField(
+        "Especialidade",
+        through="MedicoEspecialidade",
+        related_name="medicos",
+    )
+
+    class Meta:
+        verbose_name = 'Médico'
+        verbose_name_plural = "Médicos"
+        ordering = ["nome"]
+       
+        constraints = [
+            models.UniqueConstraint(fields=["crm", "uf_crm"], name="uniq_crm_uf"),
+        ]
+
+    def __str__(self):
+        return f"{self.nome} (CRM {self.crm}/{self.uf_crm})"
+
+
+
+
+class MedicoEspecialidade(models.Model):
+    medico = models.ForeignKey("Medico", on_delete=models.CASCADE)
+    especialidade = models.ForeignKey("Especialidade", on_delete=models.CASCADE)
+
+    # Campos extras úteis (opcionais)
+    duracao_minutos = models.PositiveIntegerField(default=30)
+    valor_consulta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    principal = models.BooleanField(default=False)
+
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+    class Meta:
+        verbose_name = "Vínculo Médico-Especialidade"
+        verbose_name_plural = "Vínculos Médico-Especialidade"
+        
+        constraints = [
+            models.UniqueConstraint(fields=["medico", "especialidade"], name="uniq_medico_especialidade"),
+        ]
+
+
+    def __str__(self):
+        return f"{self.medico.nome} - {self.especialidade.nome}"
+    
+
+
+
+
+
+
+
+
+# class Agendamento(models.Model):
+
+#     STATUS_CHOICES = [
+#         ('AG', 'Agendado'),
+#         ('CA', 'Cancelado'),
+#         ('FA', 'Faltou'),
+#     ]
+
+
+ 
+
+#     paciente = models.ForeignKey(Contato ,on_delete=models.CASCADE)
+#     data_agendamento = models.DateField(verbose_name="Data do Agendamento")
+#     hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
+#     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
+#     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG', verbose_name="Status do Agendamento")
+
+#     criado_em = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} ({self.get_status_display()})"
+    
+
+
+class Agendamento(models.Model):
     STATUS_CHOICES = [
         ('AG', 'Agendado'),
         ('CA', 'Cancelado'),
         ('FA', 'Faltou'),
     ]
 
+    paciente = models.ForeignKey("Contato", on_delete=models.CASCADE)
 
-    paciente = models.ForeignKey(Contato ,on_delete=models.CASCADE)
+    medico = models.ForeignKey("Medico", on_delete=models.PROTECT)
+    especialidade = models.ForeignKey("Especialidade", on_delete=models.PROTECT)
+
     data_agendamento = models.DateField(verbose_name="Data do Agendamento")
     hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
+
     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG', verbose_name="Status do Agendamento")
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default='AG',
+        verbose_name="Status do Agendamento"
+    )
 
     criado_em = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-data_agendamento", "-hora_agendamento"]
+        indexes = [
+            models.Index(fields=["medico", "data_agendamento", "hora_agendamento"]),
+            models.Index(fields=["paciente", "data_agendamento", "hora_agendamento"]),
+        ]
+
+    def clean(self):
+        # 1) valida se médico atende a especialidade
+        vinculo_ok = MedicoEspecialidade.objects.filter(
+            medico=self.medico,
+            especialidade=self.especialidade,
+            ativo=True,
+        ).exists()
+        if not vinculo_ok:
+            raise ValidationError("Este médico não atende a especialidade selecionada.")
+
+        # 2) conflito simples (mesmo médico, mesma data e hora), ignorando cancelados
+        if self.medico_id and self.data_agendamento and self.hora_agendamento:
+            qs = Agendamento.objects.filter(
+                medico=self.medico,
+                data_agendamento=self.data_agendamento,
+                hora_agendamento=self.hora_agendamento,
+            ).exclude(status="CA")
+
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+
+            if qs.exists():
+                raise ValidationError("Já existe um agendamento para este médico nesse horário.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # garante validação sempre
+        return super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} ({self.get_status_display()})"
+        return (
+            f"{self.paciente.nome} - {self.medico.nome} - "
+            f"{self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} "
+            f"({self.get_status_display()})"
+        )
