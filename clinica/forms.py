@@ -1,6 +1,6 @@
 import time
 from django import forms
-from clinica.models import Contato, Agendamento
+from clinica.models import Contato, Agendamento, Especialidade, Medico, MedicoEspecialidade
 from django.core import validators
 from phonenumber_field.formfields import PhoneNumberField
 from .validators import validate_nome, validate_celular, validate_data_nascimento, validate_cpf
@@ -238,3 +238,70 @@ class AgendamentoForm(forms.ModelForm):
                 raise forms.ValidationError("Você não pode agendar para um horário que já passou hoje.")
 
         return cleaned_data    
+    
+
+
+
+
+class MedicoForm(forms.ModelForm):
+    # Campo EXTRA (não existe no model Medico diretamente)
+    # (porque especialidades é M2M com through, então não dá pra usar direto)
+    especialidades = forms.ModelMultipleChoiceField(
+        queryset=Especialidade.objects.filter(ativo=True).order_by("nome"),
+        widget=forms.SelectMultiple(attrs={"class": "form-select custom-input", "multiple": "multiple"}),
+        required=True,
+        label="Especialidades",
+    )
+
+    class Meta:
+        model = Medico
+        fields = ["nome", "crm", "uf_crm", "email", "celular", "ativo"]  # campos do seu HTML
+        widgets = {
+            "nome": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: Dra. Maria Souza"}),
+            "crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: 12345"}),
+            "uf_crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "SP", "maxlength": "2"}),
+            "email": forms.EmailInput(attrs={"class": "form-control custom-input", "placeholder": "medico@clinica.com"}),
+            "celular": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "(xx) xxxxx-xxxx"}),
+        }
+        labels = {
+            "nome": "Nome do Médico",
+            "uf_crm": "UF CRM",
+            "celular": "Celular",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Se estiver editando, marcar especialidades atuais como selecionadas
+        if self.instance and self.instance.pk:
+            atuais = Especialidade.objects.filter(
+                medicoespecialidade__medico=self.instance,
+                medicoespecialidade__ativo=True,
+            ).distinct()
+            self.fields["especialidades"].initial = atuais
+
+    def clean_uf_crm(self):
+        uf = (self.cleaned_data.get("uf_crm") or "").strip().upper()
+        if len(uf) != 2:
+            raise forms.ValidationError("UF deve ter 2 caracteres (ex: SP).")
+        return uf
+
+    def save(self, commit=True):
+        medico = super().save(commit=commit)
+
+        # Atualiza os vínculos (through)
+        especialidades_selecionadas = self.cleaned_data.get("especialidades")
+
+        if commit:
+            # marca todas como inativas primeiro (soft delete do vínculo)
+            MedicoEspecialidade.objects.filter(medico=medico).update(ativo=False)
+
+            # reativa/cria as selecionadas
+            for esp in especialidades_selecionadas:
+                MedicoEspecialidade.objects.update_or_create(
+                    medico=medico,
+                    especialidade=esp,
+                    defaults={"ativo": True},
+                )
+
+        return medico

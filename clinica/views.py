@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from .forms import AgendamentoForm, ContatoForm, CadastroForm
+from .forms import AgendamentoForm, ContatoForm, CadastroForm, MedicoForm
 from .models import Contato, Especialidade, Medico, MedicoEspecialidade
 from django.core.paginator import Paginator
 from django.views.generic import ListView, UpdateView
@@ -342,7 +342,7 @@ def medico_create(request):
             messages.error(request, f"Erro ao cadastrar médico: {str(e)}")
 
     especialidades = Especialidade.objects.filter(ativo=True).order_by("nome")
-    return render(request, "clinica/medico_form.html", {"especialidades": especialidades})
+    return render(request, "medico/medico_form.html", {"especialidades": especialidades})
 
 
 @require_POST
@@ -366,3 +366,67 @@ def especialidade_create_ajax(request):
         return JsonResponse({"error": "JSON inválido."}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+
+def medico_create(request):
+    if request.method == "POST":
+        form = MedicoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Médico cadastrado com sucesso!")
+            return redirect("medico_list")  # ajuste para sua url
+        else:
+            messages.error(request, "Preencha os campos corretamente.")
+    else:
+        form = MedicoForm()
+
+    return render(request, "medico/medico_form.html", {"form": form})
+
+
+
+# def medico_list(request):
+#     q = (request.GET.get("q") or "").strip()
+
+#     medicos = Medico.objects.all().order_by("nome")
+
+#     if q:
+#         medicos = medicos.filter(
+#             Q(nome__icontains=q) |
+#             Q(crm__icontains=q) |
+#             Q(uf_crm__icontains=q) |
+#             Q(email__icontains=q)
+#         )
+
+#     # para evitar N+1 quando pegar especialidades
+#     medicos = medicos.prefetch_related("medicoespecialidade_set__especialidade")
+
+#     return render(request, "medico/medico_list.html", {
+#         "medicos": medicos,
+#         "q": q,
+#     })
+
+
+def medico_list(request):
+    q = (request.GET.get("q") or "").strip()
+    page_number = request.GET.get("page", 1)
+
+    qs = Medico.objects.all().order_by("nome").prefetch_related("medicoespecialidade_set__especialidade")
+
+    if q:
+        qs = qs.filter(
+            Q(nome__icontains=q) |
+            Q(crm__icontains=q) |
+            Q(uf_crm__icontains=q) |
+            Q(email__icontains=q)
+        )
+
+    paginator = Paginator(qs, 10)  # 👈 10 por página (ajuste como quiser)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "medico/medico_list.html", {
+        "page_obj": page_obj,          # 👈 objeto paginado
+        "medicos": page_obj.object_list, # (opcional, pra você usar igual já usa)
+        "q": q,
+    })
