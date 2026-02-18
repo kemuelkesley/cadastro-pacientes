@@ -1,5 +1,5 @@
 from django.db import models
-from django.forms import ValidationError
+from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -156,8 +156,6 @@ class MedicoEspecialidade(models.Model):
 #     def __str__(self):
 #         return f"{self.paciente.nome} - {self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} ({self.get_status_display()})"
     
-
-
 class Agendamento(models.Model):
     STATUS_CHOICES = [
         ('AG', 'Agendado'),
@@ -166,7 +164,6 @@ class Agendamento(models.Model):
     ]
 
     paciente = models.ForeignKey("Contato", on_delete=models.CASCADE)
-
     medico = models.ForeignKey("Medico", on_delete=models.PROTECT)
     especialidade = models.ForeignKey("Especialidade", on_delete=models.PROTECT)
 
@@ -174,36 +171,28 @@ class Agendamento(models.Model):
     hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
 
     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
-    status = models.CharField(
-        max_length=2,
-        choices=STATUS_CHOICES,
-        default='AG',
-        verbose_name="Status do Agendamento"
-    )
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG')
 
     criado_em = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        ordering = ["-data_agendamento", "-hora_agendamento"]
-        indexes = [
-            models.Index(fields=["medico", "data_agendamento", "hora_agendamento"]),
-            models.Index(fields=["paciente", "data_agendamento", "hora_agendamento"]),
-        ]
-
     def clean(self):
+        # Se ainda não tem médico ou especialidade (form incompleto), não tenta validar vínculo
+        if not self.medico_id or not self.especialidade_id:
+            return
+
         # 1) valida se médico atende a especialidade
         vinculo_ok = MedicoEspecialidade.objects.filter(
-            medico=self.medico,
-            especialidade=self.especialidade,
+            medico_id=self.medico_id,
+            especialidade_id=self.especialidade_id,
             ativo=True,
         ).exists()
         if not vinculo_ok:
             raise ValidationError("Este médico não atende a especialidade selecionada.")
 
         # 2) conflito simples (mesmo médico, mesma data e hora), ignorando cancelados
-        if self.medico_id and self.data_agendamento and self.hora_agendamento:
+        if self.data_agendamento and self.hora_agendamento:
             qs = Agendamento.objects.filter(
-                medico=self.medico,
+                medico_id=self.medico_id,
                 data_agendamento=self.data_agendamento,
                 hora_agendamento=self.hora_agendamento,
             ).exclude(status="CA")
@@ -215,12 +204,11 @@ class Agendamento(models.Model):
                 raise ValidationError("Já existe um agendamento para este médico nesse horário.")
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # garante validação sempre
+        self.full_clean()
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return (
-            f"{self.paciente.nome} - {self.medico.nome} - "
-            f"{self.data_agendamento} às {self.hora_agendamento.strftime('%H:%M')} "
-            f"({self.get_status_display()})"
-        )
+        # Evita quebrar caso alguém tenha instância incompleta em memória (admin/form)
+        paciente_nome = getattr(self.paciente, "nome", "—")
+        medico_nome = getattr(self.medico, "nome", "—")
+        return f"{paciente_nome} - {medico_nome} - {self.data_agendamento} {self.hora_agendamento}"

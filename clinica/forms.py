@@ -186,29 +186,122 @@ class CadastroForm(UserCreationForm):
 
 
 # Função para gerar opções de horário
+# agendamento original
 def gerar_horarios():
     return [time(h, m).strftime("%H:%M") for h in range(7, 17) for m in (0, 30)] + ['17:00']
+
+# class AgendamentoForm(forms.ModelForm):
+#     hora_agendamento = forms.ChoiceField(choices=[], label="Hora")
+
+#     class Meta:
+#         model = Agendamento
+#         fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao', "medico", "especialidade"]
+#         widgets = {
+#             'data_agendamento': forms.DateInput(attrs={
+#                 'type': 'date',
+#                 'class': 'form-control custom-input', 'placeholder': 'Selecione a data',
+#                 'id': 'id_data_agendamento',
+#                 'min': datetime.today().strftime('%Y-%m-%d'),
+#             }),
+#             'paciente': forms.Select(attrs={'class': 'form-control custom-input'}),
+#             'medico': forms.Select(attrs={'class': 'form-control custom-input'}),
+#             'especialidade' : forms.Select(attrs={'class': 'form-control custom-input'}),
+#             'observacao': forms.Textarea(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira observações', 'rows': 3}),
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+        
+#         data = None
+#         if self.data.get('data_agendamento'):
+#             try:
+#                 data = datetime.strptime(self.data.get('data_agendamento'), "%Y-%m-%d").date()
+#             except ValueError:
+#                 pass
+
+#         horarios_disponiveis = gerar_horarios()
+
+#         if data:
+#             horarios_ocupados = Agendamento.objects.filter(data_agendamento=data).values_list('hora_agendamento', flat=True)
+#             horarios_ocupados = [hora.strftime("%H:%M") for hora in horarios_ocupados]
+#             horarios_disponiveis = [h for h in horarios_disponiveis if h not in horarios_ocupados]
+
+#         self.fields['hora_agendamento'].choices = [(h, h) for h in horarios_disponiveis]
+#         self.fields['hora_agendamento'].widget.attrs.update({'class': 'form-control custom-input'})
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         data = cleaned_data.get('data_agendamento')
+#         hora_str = cleaned_data.get('hora_agendamento')
+
+#         if data and hora_str:
+#             hora = time.fromisoformat(hora_str)
+
+#             if data == date.today() and hora <= datetime.now().time():
+#                 raise forms.ValidationError("Você não pode agendar para um horário que já passou hoje.")
+
+#         return cleaned_data    
+
+
 
 class AgendamentoForm(forms.ModelForm):
     hora_agendamento = forms.ChoiceField(choices=[], label="Hora")
 
     class Meta:
         model = Agendamento
-        fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao']
+        fields = ['paciente', 'data_agendamento', 'hora_agendamento', 'observacao', "medico", "especialidade"]
         widgets = {
             'data_agendamento': forms.DateInput(attrs={
                 'type': 'date',
-                'class': 'form-control custom-input', 'placeholder': 'Selecione a data',
+                'class': 'form-control custom-input',
+                'placeholder': 'Selecione a data',
                 'id': 'id_data_agendamento',
                 'min': datetime.today().strftime('%Y-%m-%d'),
             }),
             'paciente': forms.Select(attrs={'class': 'form-control custom-input'}),
-            'observacao': forms.Textarea(attrs={'class': 'form-control custom-input', 'placeholder': 'Insira observações', 'rows': 3}),
+            'medico': forms.Select(attrs={'class': 'form-control custom-input'}),
+            'especialidade': forms.Select(attrs={'class': 'form-control custom-input'}),
+            'observacao': forms.Textarea(attrs={
+                'class': 'form-control custom-input',
+                'placeholder': 'Insira observações',
+                'rows': 3
+            }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
+        # 1) ESPECIALIDADE DEPENDE DO MÉDICO
+        self.fields["especialidade"].queryset = Especialidade.objects.none()
+
+        medico_id = None
+        # Quando vem POST (self.data)
+        if self.data.get("medico"):
+            medico_id = self.data.get("medico")
+        # Quando é edição / re-render por erro e a instância já tem médico
+        elif self.instance and getattr(self.instance, "medico_id", None):
+            medico_id = self.instance.medico_id
+
+        if medico_id:
+            vinculos = (
+                MedicoEspecialidade.objects
+                .filter(medico_id=medico_id, ativo=True, especialidade__ativo=True)
+                .select_related("especialidade")
+                .order_by("-principal", "especialidade__nome")
+            )
+            esp_ids = [v.especialidade_id for v in vinculos]
+            self.fields["especialidade"].queryset = Especialidade.objects.filter(id__in=esp_ids).order_by("nome")
+
+            # Auto-seleção: se só houver 1, seleciona automaticamente
+            if len(esp_ids) == 1 and not self.data.get("especialidade"):
+                self.initial["especialidade"] = esp_ids[0]
+            else:
+                # se houver principal e nada veio no POST, seleciona a principal
+                principal = next((v for v in vinculos if v.principal), None)
+                if principal and not self.data.get("especialidade"):
+                    self.initial["especialidade"] = principal.especialidade_id
+
+        # 2) HORÁRIOS DISPONÍVEIS (AJUSTE: por médico + data)
         data = None
         if self.data.get('data_agendamento'):
             try:
@@ -219,8 +312,14 @@ class AgendamentoForm(forms.ModelForm):
         horarios_disponiveis = gerar_horarios()
 
         if data:
-            horarios_ocupados = Agendamento.objects.filter(data_agendamento=data).values_list('hora_agendamento', flat=True)
-            horarios_ocupados = [hora.strftime("%H:%M") for hora in horarios_ocupados]
+            qs = Agendamento.objects.filter(data_agendamento=data).exclude(status="CA")
+
+            # se médico já foi selecionado, filtra por médico também (correto)
+            if medico_id:
+                qs = qs.filter(medico_id=medico_id)
+
+            horarios_ocupados = qs.values_list('hora_agendamento', flat=True)
+            horarios_ocupados = [h.strftime("%H:%M") for h in horarios_ocupados]
             horarios_disponiveis = [h for h in horarios_disponiveis if h not in horarios_ocupados]
 
         self.fields['hora_agendamento'].choices = [(h, h) for h in horarios_disponiveis]
@@ -233,11 +332,10 @@ class AgendamentoForm(forms.ModelForm):
 
         if data and hora_str:
             hora = time.fromisoformat(hora_str)
-
             if data == date.today() and hora <= datetime.now().time():
                 raise forms.ValidationError("Você não pode agendar para um horário que já passou hoje.")
 
-        return cleaned_data    
+        return cleaned_data
     
 
 

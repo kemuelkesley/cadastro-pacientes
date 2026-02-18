@@ -10,6 +10,7 @@ from django.views.generic import ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -422,11 +423,32 @@ def medico_list(request):
             Q(email__icontains=q)
         )
 
-    paginator = Paginator(qs, 10)  # 👈 10 por página (ajuste como quiser)
+    paginator = Paginator(qs, 10)  # 10 por página (ajuste como quiser)
     page_obj = paginator.get_page(page_number)
 
     return render(request, "medico/medico_list.html", {
-        "page_obj": page_obj,          # 👈 objeto paginado
+        "page_obj": page_obj,          #  objeto paginado
         "medicos": page_obj.object_list, # (opcional, pra você usar igual já usa)
         "q": q,
+    })
+
+
+@require_GET
+def especialidades_por_medico(request):
+    medico_id = request.GET.get("medico_id")
+    if not medico_id:
+        return JsonResponse({"especialidades": []})
+
+    vinculos = (
+        MedicoEspecialidade.objects
+        .filter(medico_id=medico_id, ativo=True, especialidade__ativo=True)
+        .select_related("especialidade")
+        .order_by("-principal", "especialidade__nome")
+    )
+
+    return JsonResponse({
+        "especialidades": [
+            {"id": v.especialidade_id, "nome": v.especialidade.nome, "principal": v.principal}
+            for v in vinculos
+        ]
     })
