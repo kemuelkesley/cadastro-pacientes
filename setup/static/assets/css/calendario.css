@@ -24,3 +24,36 @@
      font-size: 0.7rem;
      padding: 2px;
  }
+
+
+/* Deixa a tela de a gendamento bem maio */
+
+ /* #calendar {
+    max-width: 100%;
+    font-size: 0.95rem;
+}
+
+.fc .fc-daygrid-day-frame {
+    padding: 6px;
+    min-height: 110px;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.fc .fc-button {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+}
+
+.fc .fc-col-header-cell-cushion {
+    font-size: 0.85rem;
+}
+
+.fc-daygrid-event {
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+} */

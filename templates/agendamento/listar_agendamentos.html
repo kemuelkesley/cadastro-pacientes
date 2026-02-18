@@ -134,6 +134,8 @@
                                 <th>Paciente</th>
                                 <th>Data</th>
                                 <th>Hora</th>
+                                <th>Médico</th>
+                                <th>Especialidade</th>
                                 <th>Status</th>
                                 <th>Detalhes</th>
                             </tr>
@@ -144,7 +146,10 @@
                                     <td>{{ ag.paciente.nome }}</td>
                                     <td>{{ ag.data_agendamento|date:"d/m/Y" }}</td>
                                     <td>{{ ag.hora_agendamento|time:"H:i" }}</td>
+                                    <td>{{ ag.medico.nome }}</td>
+                                    <td>{{ ag.especialidade.nome }}</td>
                                     <td>{{ ag.get_status_display|default:"—" }}</td>
+                                    
                                     <td>
                                         <a href="{% url 'detalhes_paciente' ag.paciente.pk %}" class="btn btn-sm btn-olho" title="Exibir detalhes do paciente">
                                             <i class="bi bi-eye"></i>

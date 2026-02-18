@@ -2,187 +2,236 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>contato</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Agendamento</title>
 
-    <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+  {% include "partials/fontes.html" %}
 
-    {% include "partials/fontes.html" %}
+  <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/eye_cores.css' %}">
 
-    <!-- css -->    
-    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">    
-    <link rel="stylesheet" href="{% static 'assets/css/eye_cores.css' %}">    
+  <style>
+    .patient-card {
+      border-radius: 16px;
+      background: #f8f9fa;
+    }
+    .ag-item {
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .ag-item:hover {
+      box-shadow: 0 .25rem .75rem rgba(0,0,0,.08);
+    }
+    .obs-clamp {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
+{% include "partials/navbar.html" %}
 
-
-    {% include "partials/navbar.html" %}  
-
-    <div id="loader" class="loading">    
-        <div class="spinner-border text-success" role="status" style="width: 4rem; height: 4rem;">
-            <span class="visually-hidden">Carregando...</span>
-        </div>
+<section class="container mt-5 mb-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i> Detalhes do Paciente</h4>
+      <a href="{% url 'listar_agendamentos' %}" class="btn btn-light text-success fw-semibold">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </a>
     </div>
 
-    <section class="container mt-5">
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i> Detalhes do Agendamento</h4>
-                <div class="btn-group">
-                    <a href="{% url 'listar_agendamentos' %}" class="btn btn-light text-success fw-semibold">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
+    <div class="card-body">
+
+      <!-- Nome do paciente -->
+      <h3 class="mb-3 text-success">
+        <span class="badge bg-success-subtle text-success fs-5">
+          <i class="bi bi-person-circle me-2"></i> {{ paciente.nome }}
+        </span>
+      </h3>
+
+      <!-- Card Dados Importantes + ações -->
+      <div class="card patient-card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="text-success mb-3">
+            <i class="bi bi-exclamation-circle me-2"></i> Dados Importantes do Paciente
+          </h5>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="border rounded-3 p-3 bg-white h-100">
+                <strong><i class="bi bi-telephone-fill me-2 text-success"></i>Telefone</strong><br>
+                {{ paciente.celular.as_national|default:"—" }}
+              </div>
             </div>
-            <div class="card-body">
-                <h3 class="mb-4 text-success">
-                    <span class="badge bg-success-subtle text-success fs-5">
-                        <i class="bi bi-person-circle me-2"></i> Paciente: {{ paciente.nome }}
-                    </span>
-                </h3>
 
-                <div class="row g-3">
-                    <!-- Dados fixos do paciente -->
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 bg-light">
-                            <strong><i class="bi bi-telephone-fill me-2 text-success"></i>Telefone:</strong><br>
-                            {{ paciente.celular.as_national }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 bg-light">
-                            <strong><i class="bi bi-envelope-fill me-2 text-success"></i>Email:</strong><br>
-                            {{ paciente.email }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 bg-light">
-                            <strong><i class="bi bi-calendar-event-fill me-2 text-success"></i>Data de nascimento:</strong><br>
-                            {{ paciente.data_nascimento|date:"d/m/Y" }}
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="my-4" style="color: #1ba36f;">
-
-                <!-- Filtro de status -->
-                <div class="mb-4">
-                    <label for="filtroStatus" class="form-label">
-                        <span class="badge bg-success-subtle text-success fs-5">
-                            <i class="bi bi-funnel me-2"></i>Filtrar por status:
-                        </span>
-                    </label>
-                    <select id="filtroStatus" class="form-select w-auto custom-input">
-                        <option value="todos">Todos</option>
-                        <option value="AG">Agendado</option>
-                        <option value="CA">Cancelado</option>
-                        <option value="FA">Faltou</option>
-                    </select>
-                </div>
-
-                <!-- Lista de agendamentos -->
-                <h5 class="text-success mt-4"><i class="bi bi-calendar3 me-2"></i>Agendamentos do Paciente</h5>
-                {% if agendamentos %}
-                    <div class="list-group">
-                        {% for ag in agendamentos %}
-                            <div class="list-group-item list-group-item-action mb-2 border rounded shadow-sm" data-status="{{ ag.status }}">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Data:</strong> {{ ag.data_agendamento|date:"d/m/Y" }}<br>
-                                        <strong>Hora:</strong> {{ ag.hora_agendamento|time:"H:i" }}<br>
-                                        <strong>Status:</strong>
-                                        {% if ag.status == 'AG' %}
-                                            <span class="badge bg-success">{{ ag.get_status_display }}</span>
-                                        {% elif ag.status == 'CA' %}
-                                            <span class="badge bg-danger">{{ ag.get_status_display }}</span>
-                                        {% elif ag.status == 'FA' %}
-                                            <span class="badge bg-warning text-dark">{{ ag.get_status_display }}</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ ag.get_status_display }}</span>
-                                        {% endif %}
-                                        <br>
-                                        <strong>Observação:</strong> {{ ag.observacao|default:"—" }}
-                                    </div>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-editar"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editarModal{{ ag.id }}">
-                                            <i class="bi bi-pencil-square"></i> Editar
-                                        </button>
-                                </div>
-                            </div>
-
-                            <!-- Modal de Edição -->
-                            <div class="modal fade" id="editarModal{{ ag.id }}" tabindex="-1" aria-labelledby="editarModalLabel{{ ag.id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form method="POST" action="{% url 'editar_agendamento' ag.id %}">
-                                            {% csrf_token %}
-                                            <div class="modal-header bg-success text-white">
-                                                <h5 class="modal-title w-100" id="editarModalLabel{{ ag.id }}">Editar Agendamento</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label for="status{{ ag.id }}" class="form-label">Status</label>
-                                                    <select class="form-select custom-input" id="status{{ ag.id }}" name="status">
-                                                        <option value="AG" {% if ag.status == 'AG' %}selected{% endif %}>Agendado</option>
-                                                        <option value="CA" {% if ag.status == 'CA' %}selected{% endif %}>Cancelado</option>
-                                                        <option value="FA" {% if ag.status == 'FA' %}selected{% endif %}>Faltou</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="observacao{{ ag.id }}" class="form-label">Observação</label>
-                                                    <textarea class="form-control custom-input" id="observacao{{ ag.id }}" name="observacao" rows="3">{{ ag.observacao }}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-outline-success">Salvar</button>
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning mt-3">Este paciente ainda não possui agendamentos.</div>
-                {% endif %}
+            <div class="col-md-4">
+              <div class="border rounded-3 p-3 bg-white h-100">
+                <strong><i class="bi bi-envelope-fill me-2 text-success"></i>Email</strong><br>
+                {{ paciente.email|default:"—" }}
+              </div>
             </div>
+
+            <div class="col-md-4">
+              <div class="border rounded-3 p-3 bg-white h-100">
+                <strong><i class="bi bi-calendar-event-fill me-2 text-success"></i>Nascimento</strong><br>
+                {{ paciente.data_nascimento|date:"d/m/Y"|default:"—" }}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            {# WhatsApp usando o celular do django-phonenumber-field #}
+            {% if paciente.celular %}
+              <a class="btn btn-success btn-sm" target="_blank"
+                 href="https://wa.me/{{ paciente.celular.as_e164|cut:'+' }}">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+              </a>
+            {% else %}
+              <button class="btn btn-success btn-sm" disabled>
+                <i class="bi bi-whatsapp"></i> WhatsApp
+              </button>
+            {% endif %}
+
+            {% if paciente.email %}
+              <a class="btn btn-outline-success btn-sm" href="mailto:{{ paciente.email }}">
+                <i class="bi bi-envelope"></i> Email
+              </a>
+            {% else %}
+              <button class="btn btn-outline-success btn-sm" disabled>
+                <i class="bi bi-envelope"></i> Email
+              </button>
+            {% endif %}
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Script de filtragem por status -->
-    <script>
-        document.getElementById('filtroStatus').addEventListener('change', function () {
-            const statusSelecionado = this.value;
-            const agendamentos = document.querySelectorAll('.list-group-item[data-status]');
+      <!-- Linha: título + select (select em cima do nome, como você pediu) -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-4">
+        <h5 class="text-success mb-0">
+          <i class="bi bi-calendar3 me-2"></i> Agendamentos do Paciente
+        </h5>
 
-            agendamentos.forEach(item => {
-                const status = item.getAttribute('data-status');
-                if (statusSelecionado === 'todos' || status === statusSelecionado) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    </script>
+        <div class="d-flex align-items-center gap-2">
+          <label for="filtroStatus" class="form-label mb-0 fw-semibold text-success">
+            <i class="bi bi-funnel me-1"></i>Status:
+          </label>
+          <select id="filtroStatus" class="form-select w-auto custom-input">
+            <option value="todos">Todos</option>
+            <option value="AG">Agendados</option>
+            <option value="CA">Cancelados</option>
+            <option value="FA">Faltou</option>
+          </select>
+        </div>
+      </div>
 
-    <script src="{% static 'js/loader.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+      {% if agendamentos %}
+        <div class="list-group mt-3" id="listaAgendamentos">
+          {% for ag in agendamentos %}
+            <div class="list-group-item ag-item mb-2 p-3" data-status="{{ ag.status }}">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="w-100">
+                  <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="fw-bold text-success">
+                      <i class="bi bi-clock me-1"></i>{{ ag.hora_agendamento|time:"H:i" }}
+                    </span>
+                    <span class="fw-semibold">
+                      <i class="bi bi-calendar-event me-1"></i>{{ ag.data_agendamento|date:"d/m/Y" }}
+                    </span>
+
+                    {% if ag.status == 'AG' %}
+                      <span class="badge bg-success">{{ ag.get_status_display }}</span>
+                    {% elif ag.status == 'CA' %}
+                      <span class="badge bg-danger">{{ ag.get_status_display }}</span>
+                    {% elif ag.status == 'FA' %}
+                      <span class="badge bg-warning text-dark">{{ ag.get_status_display }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ ag.get_status_display }}</span>
+                    {% endif %}
+                  </div>
+
+                  <div class="small">
+                    <div><strong>Médico:</strong> {{ ag.medico.nome }}</div>
+                    <div><strong>Especialidade:</strong> {{ ag.especialidade.nome }}</div>
+                    <div class="mt-2">
+                      <strong>Observação:</strong>
+                      <div class="text-muted obs-clamp">{{ ag.observacao|default:"—" }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-end">
+                  <button type="button" class="btn btn-sm btn-success"
+                          data-bs-toggle="modal" data-bs-target="#editarModal{{ ag.id }}">
+                    <i class="bi bi-pencil-square"></i> Editar Status
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal de edição -->
+            <div class="modal fade" id="editarModal{{ ag.id }}" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <form method="POST" action="{% url 'editar_agendamento' ag.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header bg-success text-white">
+                      <h5 class="modal-title w-100">Editar Agendamento</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select custom-input" name="status">
+                          <option value="AG" {% if ag.status == 'AG' %}selected{% endif %}>Agendado</option>
+                          <option value="CA" {% if ag.status == 'CA' %}selected{% endif %}>Cancelado</option>
+                          <option value="FA" {% if ag.status == 'FA' %}selected{% endif %}>Faltou</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Observação</label>
+                        <textarea class="form-control custom-input" name="observacao" rows="3">{{ ag.observacao }}</textarea>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-success">Salvar</button>
+                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-warning mt-3">Este paciente ainda não possui agendamentos.</div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function aplicarFiltroStatus() {
+    const statusSelecionado = document.getElementById('filtroStatus').value;
+    const itens = document.querySelectorAll('#listaAgendamentos .list-group-item[data-status]');
+
+    itens.forEach(item => {
+      const status = item.getAttribute('data-status');
+      item.style.display = (statusSelecionado === 'todos' || status === statusSelecionado) ? 'block' : 'none';
+    });
+  }
+
+  document.getElementById('filtroStatus')?.addEventListener('change', aplicarFiltroStatus);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
