@@ -22,8 +22,8 @@ label {
 } */
 
 .contorno__form__geral {
-    max-width: 700px;
-    margin: 0 auto;
+    width: 70rem;
+    margin: 5rem auto;
     border-color: #228b47;
 }
 

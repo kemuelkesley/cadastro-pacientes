@@ -62,8 +62,108 @@
 
                 <form method="POST">
                     {% csrf_token %}
-                    {% load crispy_forms_tags %}
-                    {{ form | crispy }}
+                    
+                    <!-- Linha 1: Nome e Email -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label fw-semibold">{{ form.nome.label }}</label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                                <div class="text-danger small">{{ form.nome.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Linha 2: CPF, Data de Nascimento e Celular -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.cpf.id_for_label }}" class="form-label fw-semibold">{{ form.cpf.label }}</label>
+                            {{ form.cpf }}
+                            {% if form.cpf.errors %}
+                                <div class="text-danger small">{{ form.cpf.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.data_nascimento.id_for_label }}" class="form-label fw-semibold">{{ form.data_nascimento.label }}</label>
+                            {{ form.data_nascimento }}
+                            {% if form.data_nascimento.errors %}
+                                <div class="text-danger small">{{ form.data_nascimento.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.celular.id_for_label }}" class="form-label fw-semibold">{{ form.celular.label }}</label>
+                            {{ form.celular }}
+                            {% if form.celular.errors %}
+                                <div class="text-danger small">{{ form.celular.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Linha 3: CEP, Rua e Número -->
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="{{ form.cep.id_for_label }}" class="form-label fw-semibold">{{ form.cep.label }}</label>
+                            {{ form.cep }}
+                            {% if form.cep.errors %}
+                                <div class="text-danger small">{{ form.cep.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.rua.id_for_label }}" class="form-label fw-semibold">{{ form.rua.label }}</label>
+                            {{ form.rua }}
+                            {% if form.rua.errors %}
+                                <div class="text-danger small">{{ form.rua.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.numero.id_for_label }}" class="form-label fw-semibold">{{ form.numero.label }}</label>
+                            {{ form.numero }}
+                            {% if form.numero.errors %}
+                                <div class="text-danger small">{{ form.numero.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Linha 4: Bairro, Estado e UF -->
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <label for="{{ form.bairro.id_for_label }}" class="form-label fw-semibold">{{ form.bairro.label }}</label>
+                            {{ form.bairro }}
+                            {% if form.bairro.errors %}
+                                <div class="text-danger small">{{ form.bairro.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-5">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label fw-semibold">{{ form.estado.label }}</label>
+                            {{ form.estado }}
+                            {% if form.estado.errors %}
+                                <div class="text-danger small">{{ form.estado.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="{{ form.uf.id_for_label }}" class="form-label fw-semibold">{{ form.uf.label }}</label>
+                            {{ form.uf }}
+                            {% if form.uf.errors %}
+                                <div class="text-danger small">{{ form.uf.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Erros gerais do formulário -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
                     <div class="d-flex justify-content-center mt-4">
                         <button type="button" class="button__form" data-bs-toggle="modal" data-bs-target="#confirmModal">

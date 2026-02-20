@@ -9,7 +9,7 @@ from clinica.models import Contato
 
 fake = Faker('pt_BR')
 
-def populate_data(n=2):
+def populate_data(n=20):
     for _ in range(n):
         nome = fake.name()
         email = fake.email()
@@ -40,6 +40,6 @@ def populate_data(n=2):
 
 if __name__ == '__main__':
     print('Populando a base de dados...')
-    populate_data(2)
+    populate_data(20)
     print('Populado com sucesso!')
 
