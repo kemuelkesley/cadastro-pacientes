@@ -282,10 +282,13 @@ def agendamentos_json(request):
 
             "extendedProps":{
                 "paciente" : ag.paciente.nome,
+                "paciente_id": ag.paciente.id,
                 "medico" : ag.medico.nome,
                 "especialidade": ag.especialidade.nome,
                 "status": ag.status,
                 "observacao": ag.observacao,
+                "agendamento_id": ag.id,
+                "data_agendamento": str(ag.data_agendamento),
             }     
         })
 

@@ -180,6 +180,9 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+          <a href="#" id="btnVerDetalhes" class="btn btn-success">
+            <i class="bi bi-eye-fill me-1"></i> Ver Detalhes
+          </a>
         </div>
       </div>
     </div>
@@ -197,6 +200,9 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <script>
+    // URL base para detalhes do paciente (remove o /0/ e deixa apenas /paciente/)
+    const urlDetalhesPaciente = '{% url "detalhes_paciente" 0 %}'.replace('0/', '');
+    
     document.addEventListener('DOMContentLoaded', function () {
       // Flatpickr com bloqueio de sábado e domingo e datas anteriores ao dia atual
       flatpickr("#id_data_agendamento", {
@@ -249,8 +255,9 @@
         },
         eventClick: function (info) {
           const paciente = info.event.extendedProps.paciente;
+          const pacienteId = info.event.extendedProps.paciente_id;
           const medico = info.event.extendedProps.medico;
-          const especialidade = info.event.extendedProps.especialidade;	
+          const especialidade = info.event.extendedProps.especialidade;
 
           // Usa info.event.start que é a propriedade correta do FullCalendar
           const horario = new Date(info.event.start).toLocaleString('pt-BR', {
@@ -266,6 +273,18 @@
 			 <strong>Especialidade:</strong> ${especialidade} <br>
 		  `;
 
+          // Configura o link do botão "Ver Detalhes" para a página de detalhes do paciente
+          const btnVerDetalhes = document.getElementById('btnVerDetalhes');
+          if (pacienteId) {
+            // Remove a classe disabled se existir
+            btnVerDetalhes.classList.remove('disabled');
+            // Constrói a URL: /paciente/{id}/
+            btnVerDetalhes.href = urlDetalhesPaciente + pacienteId + '/';
+          } else {
+            // Fallback: desabilita o botão se não houver ID do paciente
+            btnVerDetalhes.href = '#';
+            btnVerDetalhes.classList.add('disabled');
+          }
 
           document.getElementById('mensagem-horario').innerHTML = mensagem;
           const modal = new bootstrap.Modal(document.getElementById('modalHorarioOcupado'));
