@@ -4,7 +4,12 @@
  }
 
  .fc .fc-daygrid-day-frame {
-    padding: 2px;
+     padding: 2px;
+     min-height: 100px;
+ }
+
+ .fc-daygrid-day {
+     min-height: 100px;
  }
 
  .fc .fc-toolbar-title {
@@ -22,7 +27,70 @@
 
  .fc-daygrid-event {
      font-size: 0.7rem;
-     padding: 2px;
+     padding: 3px 4px;
+     white-space: normal;
+     word-wrap: break-word;
+     overflow: hidden;
+     max-width: 100%;
+     background-color: #28a745 !important;
+     border-color: #28a745 !important;
+     line-height: 1.3;
+     box-sizing: border-box;
+ }
+
+ /* Wrapper do conteúdo do evento */
+ .fc-event-content-wrapper {
+     overflow: hidden;
+     max-width: 100%;
+     display: flex;
+     align-items: center;
+     flex-wrap: wrap;
+     gap: 3px;
+     box-sizing: border-box;
+     line-height: 1.2;
+ }
+
+ /* Garante que o conteúdo não saia do evento */
+ .fc-event-main {
+     overflow: hidden;
+     max-width: 100%;
+     box-sizing: border-box;
+ }
+
+ /* Bolinha verde */
+ .fc-event-dot-green {
+     display: inline-block;
+     width: 7px;
+     height: 7px;
+     border-radius: 50%;
+     background-color: #fff;
+     margin-right: 3px;
+     flex-shrink: 0;
+     vertical-align: middle;
+ }
+
+ /* Hora em verde claro - sempre completa */
+ .fc-event-time-green {
+     color: #90EE90;
+     font-weight: bold;
+     font-size: 0.7rem;
+     white-space: nowrap;
+     flex-shrink: 0;
+     display: inline-block;
+ }
+
+ /* Nome do paciente em branco/negrito */
+ .fc-event-title-bold {
+     color: #fff;
+     font-weight: bold;
+     font-size: 0.7rem;
+     word-wrap: break-word;
+     overflow-wrap: break-word;
+     display: inline-block;
+     flex: 1;
+     min-width: 0;
+     overflow: hidden;
+     text-overflow: ellipsis;
  }
 
 

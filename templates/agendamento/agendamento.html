@@ -228,7 +228,22 @@
         locale: 'pt-br',
         hiddenDays: [0, 6],
         height: 'auto',       
-        events: '{% url "agendamentos_json" %}',        
+        events: '{% url "agendamentos_json" %}',
+        eventContent: function(arg) {
+          // Extrai a hora completa do evento (formato HH:MM)
+          const startDate = new Date(arg.event.start);
+          const horas = String(startDate.getHours()).padStart(2, '0');
+          const minutos = String(startDate.getMinutes()).padStart(2, '0');
+          const hora = horas + ':' + minutos;
+          
+          // Pega o nome do paciente do título ou extendedProps
+          const nome = arg.event.title || arg.event.extendedProps.paciente || '';
+          
+          // Formata com bolinha verde, hora completa e nome - tudo dentro do quadrado
+          return {
+            html: '<div class="fc-event-content-wrapper"><span class="fc-event-dot-green"></span><span class="fc-event-time-green">' + hora + '</span> <span class="fc-event-title-bold">' + nome + '</span></div>'
+          };
+        },
         buttonText: {
         today: 'Hoje',
         },
