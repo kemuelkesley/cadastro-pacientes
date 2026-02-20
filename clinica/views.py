@@ -266,7 +266,11 @@ def listar_agendamentos(request):
     
 @login_required
 def agendamentos_json(request):
-    agendamentos = Agendamento.objects.all()
+    #agendamentos = Agendamento.objects.all()
+    agendamentos = Agendamento.objects.select_related(
+        "paciente", "medico", "especialidade"
+    )
+
     eventos = []
 
     for ag in agendamentos:
@@ -274,8 +278,18 @@ def agendamentos_json(request):
             "title": ag.paciente.nome,
             "start": f"{ag.data_agendamento}T{ag.hora_agendamento}",
             "end": f"{ag.data_agendamento}T{ag.hora_agendamento}",
-            "color": "red",            
+            "color": "#28a745",       
+
+            "extendedProps":{
+                "paciente" : ag.paciente.nome,
+                "medico" : ag.medico.nome,
+                "especialidade": ag.especialidade.nome,
+                "status": ag.status,
+                "observacao": ag.observacao,
+            }     
         })
+
+
 
     return JsonResponse(eventos, safe=False)    
 
