@@ -389,12 +389,25 @@ def especialidade_create_ajax(request):
 
 
 def medico_create(request):
+    """
+    Criação de médico usando MedicoForm e salvando o vínculo com Especialidades via MedicoEspecialidade.
+    """
     if request.method == "POST":
         form = MedicoForm(request.POST)
         if form.is_valid():
-            form.save()
+            medico = form.save()
+
+            especialidades = form.cleaned_data.get("especialidades") or []
+            MedicoEspecialidade.objects.filter(medico=medico).delete()
+            for esp in especialidades:
+                MedicoEspecialidade.objects.get_or_create(
+                    medico=medico,
+                    especialidade=esp,
+                    defaults={"duracao_minutos": 30, "ativo": True},
+                )
+
             messages.success(request, "Médico cadastrado com sucesso!")
-            return redirect("medico_list")  # ajuste para sua url
+            return redirect("medico_list")
         else:
             messages.error(request, "Preencha os campos corretamente.")
     else:
@@ -448,6 +461,56 @@ def medico_list(request):
         "medicos": page_obj.object_list, # (opcional, pra você usar igual já usa)
         "q": q,
     })
+
+
+@login_required
+def medico_update(request, pk):
+    """
+    Edição de médico reutilizando o mesmo formulário de criação.
+    """
+    medico = get_object_or_404(Medico, pk=pk)
+
+    if request.method == "POST":
+        form = MedicoForm(request.POST, instance=medico)
+        if form.is_valid():
+            medico = form.save()
+
+            especialidades = form.cleaned_data.get("especialidades") or []
+            MedicoEspecialidade.objects.filter(medico=medico).delete()
+            for esp in especialidades:
+                MedicoEspecialidade.objects.get_or_create(
+                    medico=medico,
+                    especialidade=esp,
+                    defaults={"duracao_minutos": 30, "ativo": True},
+                )
+
+            messages.success(request, "Médico atualizado com sucesso!")
+            return redirect("medico_list")
+        else:
+            messages.error(request, "Corrija os erros do formulário.")
+    else:
+        inicial = {
+            "especialidades": Especialidade.objects.filter(
+                medicoespecialidade__medico=medico,
+                medicoespecialidade__ativo=True,
+            )
+        }
+        form = MedicoForm(instance=medico, initial=inicial)
+
+    return render(request, "medico/medico_form.html", {"form": form})
+
+
+@login_required
+@require_POST
+def medico_delete(request, pk):
+    """
+    Exclusão simples de médico (e vínculos) com confirmação via POST.
+    """
+    medico = get_object_or_404(Medico, pk=pk)
+    nome = medico.nome
+    medico.delete()
+    messages.success(request, f"Médico {nome} excluído com sucesso!")
+    return redirect("medico_list")
 
 
 @require_GET

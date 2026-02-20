@@ -17,6 +17,8 @@ from clinica.views import (
    detalhes_paciente, 
    editar_agendamento,
    medico_create,
+   medico_update,
+   medico_delete,
    especialidade_create_ajax,
    especialidades_por_medico
 )
@@ -40,6 +42,8 @@ urlpatterns = [
    path('agendamento/<int:agendamento_id>/editar/', editar_agendamento, name='editar_agendamento'),   
    path("medicos/", medico_list, name="medico_list"),
    path("medicos/novo/", medico_create, name='medico_create'),
+   path("medicos/<int:pk>/editar/", medico_update, name='medico_update'),
+   path("medicos/<int:pk>/excluir/", medico_delete, name='medico_delete'),
    path("especialidades/ajax/criar", especialidade_create_ajax ,name='especialidade_create_ajax'),
    path("api/especialidades-por-medico/", especialidades_por_medico, name='especialidades_por_medico'),
 ]

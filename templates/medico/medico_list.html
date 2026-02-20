@@ -129,16 +129,25 @@
                   </td>
 
                   <td class="text-end">
-                    <!-- Ajuste os links conforme suas URLs reais -->
-                    <a href="#"
-                       class="btn btn-sm btn-outline-primary">
+                    <!-- Editar médico -->
+                    <a href="{% url 'medico_update' m.id %}"
+                       class="btn btn-sm btn-outline-primary"
+                       title="Editar médico">
                       <i class="bi bi-pencil-square"></i>
                     </a>
 
-                    <a href="#"
-                       class="btn btn-sm btn-outline-danger">
-                      <i class="bi bi-trash"></i>
-                    </a>
+                    <!-- Excluir médico (confirmação via POST) -->
+                    <form method="post"
+                          action="{% url 'medico_delete' m.id %}"
+                          class="d-inline"
+                          onsubmit="return confirm('Deseja realmente excluir o médico {{ m.nome }}?');">
+                      {% csrf_token %}
+                      <button type="submit"
+                              class="btn btn-sm btn-outline-danger"
+                              title="Excluir médico">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
                   </td>
                 </tr>
               {% empty %}
