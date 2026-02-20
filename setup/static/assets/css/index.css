@@ -48,3 +48,20 @@
 .btn-blue:hover {
     background-color: #0b5ed7;
 }
+
+.text-purple {
+    color: #6f42c1;
+}
+
+.btn-purple {
+    background-color: #6f42c1;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 20px;
+    border: none;
+}
+
+.btn-purple:hover {
+    background-color: #5a32a3;
+    color: white;
+}
