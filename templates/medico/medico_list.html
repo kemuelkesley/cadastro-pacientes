@@ -101,7 +101,7 @@
                     {% if m.email %}
                       <div><i class="bi bi-envelope"></i> {{ m.email }}</div>
                     {% endif %}
-                    <div><i class="bi bi-phone"></i> {{ m.celular }}</div>
+                    <div><i class="bi bi-phone"></i> {{ m.celular.as_national|default:"-" }}</div>
                   </td>
 
                   <td class="small">
