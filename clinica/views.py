@@ -3,6 +3,8 @@ import json
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+
+from setup import settings
 from .forms import AgendamentoForm, ContatoForm, CadastroForm, MedicoForm
 from .models import Contato, Especialidade, Medico, MedicoEspecialidade
 from django.core.paginator import Paginator
@@ -297,25 +299,115 @@ def agendamentos_json(request):
     return JsonResponse(eventos, safe=False)    
 
 
+# @login_required
+# def detalhes_paciente(request, pk):
+#     paciente = get_object_or_404(Contato, pk=pk)
+#     agendamentos = Agendamento.objects.filter(paciente=paciente).order_by('-data_agendamento', '-hora_agendamento')
+
+#     return render(request, 'agendamento/detalhes.html', {
+#         'paciente': paciente,
+#         'agendamentos': agendamentos,
+#     })
+
+
+# @require_POST
+# def editar_agendamento(request, agendamento_id):
+#     agendamento = get_object_or_404(Agendamento, id=agendamento_id)
+#     agendamento.status = request.POST.get('status')
+#     agendamento.observacao = request.POST.get('observacao')
+#     agendamento.save()
+    
+#     return redirect('detalhes_paciente', agendamento.paciente.id)
+
+
+# Testando nova funcionalidade
+# @login_required
+# def detalhes_paciente(request, pk):
+#     paciente = get_object_or_404(Contato, pk=pk)
+
+#     agendamentos = (
+#         Agendamento.objects
+#         .filter(paciente=paciente)
+#         .select_related("medico", "especialidade", "paciente")
+#         .order_by("-data_agendamento", "-hora_agendamento")
+#     )
+
+#     context = {
+#         "paciente": paciente,
+#         "agendamentos": agendamentos,
+#         "clinica_nome": getattr(settings, "CLINICA_NOME", "Clínica"),
+#         "clinica_endereco": getattr(settings, "CLINICA_ENDERECO", ""),
+#         "clinica_maps_url": getattr(settings, "CLINICA_MAPS_URL", ""),
+#     }
+#     return render(request, "agendamento/detalhes.html", context)
+
+
+
+from urllib.parse import quote
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from .models import Contato, Agendamento
+
+
 @login_required
 def detalhes_paciente(request, pk):
     paciente = get_object_or_404(Contato, pk=pk)
-    agendamentos = Agendamento.objects.filter(paciente=paciente).order_by('-data_agendamento', '-hora_agendamento')
 
-    return render(request, 'agendamento/detalhes.html', {
-        'paciente': paciente,
-        'agendamentos': agendamentos,
+    agendamentos = (
+        Agendamento.objects
+        .filter(paciente=paciente)
+        .select_related("medico", "especialidade", "paciente")
+        .order_by("-data_agendamento", "-hora_agendamento")
+    )
+
+    clinica_nome = getattr(settings, "CLINICA_NOME", "Clínica")
+    clinica_endereco = getattr(settings, "CLINICA_ENDERECO", "")
+    clinica_maps_url = getattr(settings, "CLINICA_MAPS_URL", "")
+
+    for ag in agendamentos:
+        msg = (
+            f"Olá, {paciente.nome}!\n\n"
+            f" *CONFIRMAÇÃO DE AGENDAMENTO*\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f" *Código:* #{ag.id}\n"
+            f" *Data:* {ag.data_agendamento.strftime('%d/%m/%Y')}\n"
+            f" *Hora:* {ag.hora_agendamento.strftime('%H:%M')}\n"
+            f" *Médico:* {ag.medico.nome}\n"
+            f" *Consulta:* {ag.especialidade.nome}\n\n"
+            f" *Clínica:* {clinica_nome}\n"
+            f" *Endereço:* {clinica_endereco}\n"
+            f" *Localização:* {clinica_maps_url}\n\n"
+            f" Pedimos que chegue com *10 minutos de antecedência*.\n"
+            f" Trazer documento com foto e, se houver, carteirinha do convênio.\n\n"
+            f"Caso precise reagendar, responda esta mensagem.\n"
+            f"Estamos à disposição!"
+        )
+
+        numero = str(paciente.celular.as_e164).replace("+", "")
+        ag.whatsapp_url = f"https://wa.me/{numero}?text={quote(msg)}"
+
+    return render(request, "agendamento/detalhes.html", {
+        "paciente": paciente,
+        "agendamentos": agendamentos,
     })
 
 
 @require_POST
+@login_required
 def editar_agendamento(request, agendamento_id):
     agendamento = get_object_or_404(Agendamento, id=agendamento_id)
-    agendamento.status = request.POST.get('status')
-    agendamento.observacao = request.POST.get('observacao')
+
+    # Segurança simples: só permite valores válidos
+    status = request.POST.get("status")
+    if status in dict(Agendamento.STATUS_CHOICES):
+        agendamento.status = status
+
+    agendamento.observacao = request.POST.get("observacao", "")
     agendamento.save()
-    
-    return redirect('detalhes_paciente', agendamento.paciente.id)
+
+    return redirect("detalhes_paciente", pk=agendamento.paciente.id)
+
 
 
 

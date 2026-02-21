@@ -176,3 +176,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Renova a sessão a cada requisição (para prolongar caso o usuário esteja ativo)
 SESSION_SAVE_EVERY_REQUEST = False  # <- mantenha False para que a sessão expire se estiver inativo
+
+
+DEFAULT_CHARSET = "utf-8"
+
+# Mensagem whatsaapp
+
+CLINICA_NOME = "clinica vida"
+CLINICA_ENDERECO = "Rua Alves campos nº 123, Centro, Maceio - AL"
+CLINICA_MAPS_URL = "https://maps.app.goo.gl/nnooWw5tRMSmudgLA"
