@@ -500,17 +500,17 @@ def medico_update(request, pk):
     return render(request, "medico/medico_form.html", {"form": form})
 
 
-@login_required
-@require_POST
-def medico_delete(request, pk):
-    """
-    Exclusão simples de médico (e vínculos) com confirmação via POST.
-    """
-    medico = get_object_or_404(Medico, pk=pk)
-    nome = medico.nome
-    medico.delete()
-    messages.success(request, f"Médico {nome} excluído com sucesso!")
-    return redirect("medico_list")
+# @login_required
+# @require_POST
+# def medico_delete(request, pk):
+#     """
+#     Exclusão simples de médico (e vínculos) com confirmação via POST.
+#     """
+#     medico = get_object_or_404(Medico, pk=pk)
+#     nome = medico.nome
+#     medico.delete()
+#     messages.success(request, f"Médico {nome} excluído com sucesso!")
+#     return redirect("medico_list")
 
 
 @require_GET
@@ -532,3 +532,28 @@ def especialidades_por_medico(request):
             for v in vinculos
         ]
     })
+
+
+
+def deletar_medico(request, pk):
+    medico = get_object_or_404(Medico, pk=pk)
+
+    if request.method == "GET":
+        return render(
+            request,
+            "medico/confirmar_exclusao_medico.html",
+            {"medico": medico},
+        )
+
+    elif request.method == "POST":
+        nome = medico.nome  # salva o nome antes de deletar
+        medico.delete()     # agora sim deleta o objeto
+
+        messages.warning(
+            request,
+            f"Médico {medico.nome} excluído com sucesso!",
+            extra_tags="excluído",
+        )
+        return redirect("medico_list")
+
+    return HttpResponseNotAllowed(["GET", "POST"])

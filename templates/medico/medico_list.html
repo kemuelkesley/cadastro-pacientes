@@ -142,11 +142,12 @@
                           class="d-inline"
                           onsubmit="return confirm('Deseja realmente excluir o médico {{ m.nome }}?');">
                       {% csrf_token %}
-                      <button type="submit"
-                              class="btn btn-sm btn-outline-danger"
-                              title="Excluir médico">
+                      <!-- Excluir médico (abre página de confirmação) -->
+                      <a href="{% url 'medico_delete' m.id %}"
+                        class="btn btn-sm btn-outline-danger"
+                        title="Excluir médico">
                         <i class="bi bi-trash"></i>
-                      </button>
+                      </a>
                     </form>
                   </td>
                 </tr>
