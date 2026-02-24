@@ -1,44 +1,37 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalhes do Agendamento</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/eye_cores.css' %}">
 
-  {% include "partials/fontes.html" %}
+<style>
+  .patient-card {
+    border-radius: 16px;
+    background: #f8f9fa;
+  }
 
-  <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/css/eye_cores.css' %}">
+  .ag-item {
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 14px;
+    background: #fff;
+  }
 
-  <style>
-    .patient-card {
-      border-radius: 16px;
-      background: #f8f9fa;
-    }
-    .ag-item {
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 14px;
-      background: #fff;
-    }
-    .ag-item:hover {
-      box-shadow: 0 .25rem .75rem rgba(0,0,0,.08);
-    }
-    .obs-clamp {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
-</head>
+  .ag-item:hover {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .08);
+  }
 
-<body>
-{% include "partials/navbar.html" %}
+  .obs-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
 
+{% block content %}
 <section class="container mt-5 mb-5">
   <div class="card shadow-lg border-0 rounded-4">
     <div class="card-header bg-success text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
@@ -90,31 +83,32 @@
           <div class="d-flex flex-wrap gap-2 mt-4">
             {# WhatsApp (abre só o chat, sem mensagem). O botão com mensagem fica nos agendamentos abaixo #}
             {% if paciente.celular %}
-              <a class="btn btn-success btn-sm" target="_blank"
-                 href="https://wa.me/{{ paciente.celular.as_e164|cut:'+' }}">
-                <i class="bi bi-whatsapp"></i> WhatsApp
-              </a>
+            <a class="btn btn-success btn-sm" target="_blank"
+              href="https://wa.me/{{ paciente.celular.as_e164|cut:'+' }}">
+              <i class="bi bi-whatsapp"></i> WhatsApp
+            </a>
             {% else %}
-              <button class="btn btn-success btn-sm" disabled>
-                <i class="bi bi-whatsapp"></i> WhatsApp
-              </button>
+            <button class="btn btn-success btn-sm" disabled>
+              <i class="bi bi-whatsapp"></i> WhatsApp
+            </button>
             {% endif %}
 
             {% if paciente.email %}
-              <a class="btn btn-outline-success btn-sm" href="mailto:{{ paciente.email }}">
-                <i class="bi bi-envelope"></i> Email
-              </a>
+            <a class="btn btn-outline-success btn-sm" href="mailto:{{ paciente.email }}">
+              <i class="bi bi-envelope"></i> Email
+            </a>
             {% else %}
-              <button class="btn btn-outline-success btn-sm" disabled>
-                <i class="bi bi-envelope"></i> Email
-              </button>
+            <button class="btn btn-outline-success btn-sm" disabled>
+              <i class="bi bi-envelope"></i> Email
+            </button>
             {% endif %}
           </div>
         </div>
       </div>
 
       <!-- Linha: título + select -->
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-4">
+      <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-4">
         <h5 class="text-success mb-0">
           <i class="bi bi-calendar3 me-2"></i> Agendamentos do Paciente
         </h5>
@@ -133,100 +127,101 @@
       </div>
 
       {% if agendamentos %}
-        <div class="list-group mt-3" id="listaAgendamentos">
-          {% for ag in agendamentos %}
-            <div class="list-group-item ag-item mb-2 p-3" data-status="{{ ag.status }}">
-              <div class="d-flex justify-content-between align-items-start gap-3">
-                <div class="w-100">
-                  <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                    <span class="fw-bold text-success">
-                      <i class="bi bi-clock me-1"></i>{{ ag.hora_agendamento|time:"H:i" }}
-                    </span>
-                    <span class="fw-semibold">
-                      <i class="bi bi-calendar-event me-1"></i>{{ ag.data_agendamento|date:"d/m/Y" }}
-                    </span>
+      <div class="list-group mt-3" id="listaAgendamentos">
+        {% for ag in agendamentos %}
+        <div class="list-group-item ag-item mb-2 p-3" data-status="{{ ag.status }}">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="w-100">
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <span class="fw-bold text-success">
+                  <i class="bi bi-clock me-1"></i>{{ ag.hora_agendamento|time:"H:i" }}
+                </span>
+                <span class="fw-semibold">
+                  <i class="bi bi-calendar-event me-1"></i>{{ ag.data_agendamento|date:"d/m/Y" }}
+                </span>
 
-                    {% if ag.status == 'AG' %}
-                      <span class="badge bg-success">{{ ag.get_status_display }}</span>
-                    {% elif ag.status == 'CA' %}
-                      <span class="badge bg-danger">{{ ag.get_status_display }}</span>
-                    {% elif ag.status == 'FA' %}
-                      <span class="badge bg-warning text-dark">{{ ag.get_status_display }}</span>
-                    {% else %}
-                      <span class="badge bg-secondary">{{ ag.get_status_display }}</span>
-                    {% endif %}
-                  </div>
+                {% if ag.status == 'AG' %}
+                <span class="badge bg-success">{{ ag.get_status_display }}</span>
+                {% elif ag.status == 'CA' %}
+                <span class="badge bg-danger">{{ ag.get_status_display }}</span>
+                {% elif ag.status == 'FA' %}
+                <span class="badge bg-warning text-dark">{{ ag.get_status_display }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ ag.get_status_display }}</span>
+                {% endif %}
+              </div>
 
-                  <div class="small">
-                    <div><strong>Médico:</strong> {{ ag.medico.nome }}</div>
-                    <div><strong>Especialidade / Tipo de consulta:</strong> {{ ag.especialidade.nome }}</div>
+              <div class="small">
+                <div><strong>Médico:</strong> {{ ag.medico.nome }}</div>
+                <div><strong>Especialidade / Tipo de consulta:</strong> {{ ag.especialidade.nome }}</div>
 
-                    <div class="mt-2">
-                      <strong>Observação:</strong>
-                      <div class="text-muted obs-clamp">{{ ag.observacao|default:"—" }}</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="text-end">
-                  <button type="button" class="btn btn-sm btn-success"
-                          data-bs-toggle="modal" data-bs-target="#editarModal{{ ag.id }}">
-                    <i class="bi bi-pencil-square"></i> Editar Status
-                  </button>
-
-                  {% if paciente.celular and ag.status == 'AG' %}
-                    <a class="btn btn-sm btn-outline-success mt-2"
-                      target="_blank"
-                      href="{{ ag.whatsapp_url }}">
-                      <i class="bi bi-whatsapp"></i> Enviar Confirmação
-                    </a>
-                  {% endif %}
+                <div class="mt-2">
+                  <strong>Observação:</strong>
+                  <div class="text-muted obs-clamp">{{ ag.observacao|default:"—" }}</div>
                 </div>
               </div>
             </div>
 
-            <!-- Modal de edição -->
-            <div class="modal fade" id="editarModal{{ ag.id }}" tabindex="-1">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <form method="POST" action="{% url 'editar_agendamento' ag.id %}">
-                    {% csrf_token %}
-                    <div class="modal-header bg-success text-white">
-                      <h5 class="modal-title w-100">Editar Agendamento</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <select class="form-select custom-input" name="status">
-                          <option value="AG" {% if ag.status == 'AG' %}selected{% endif %}>Agendado</option>
-                          <option value="CA" {% if ag.status == 'CA' %}selected{% endif %}>Cancelado</option>
-                          <option value="FA" {% if ag.status == 'FA' %}selected{% endif %}>Faltou</option>
-                        </select>
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label">Observação</label>
-                        <textarea class="form-control custom-input" name="observacao" rows="3">{{ ag.observacao }}</textarea>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-success">Salvar</button>
-                      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                data-bs-target="#editarModal{{ ag.id }}">
+                <i class="bi bi-pencil-square"></i> Editar Status
+              </button>
+
+              {% if paciente.celular and ag.status == 'AG' %}
+              <a class="btn btn-sm btn-outline-success mt-2" target="_blank" href="{{ ag.whatsapp_url }}">
+                <i class="bi bi-whatsapp"></i> Enviar Confirmação
+              </a>
+              {% endif %}
             </div>
-          {% endfor %}
+          </div>
         </div>
+
+        <!-- Modal de edição -->
+        <div class="modal fade" id="editarModal{{ ag.id }}" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <form method="POST" action="{% url 'editar_agendamento' ag.id %}">
+                {% csrf_token %}
+                <div class="modal-header bg-success text-white">
+                  <h5 class="modal-title w-100">Editar Agendamento</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select custom-input" name="status">
+                      <option value="AG" {% if ag.status=='AG' %}selected{% endif %}>Agendado</option>
+                      <option value="CA" {% if ag.status=='CA' %}selected{% endif %}>Cancelado</option>
+                      <option value="FA" {% if ag.status=='FA' %}selected{% endif %}>Faltou</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Observação</label>
+                    <textarea class="form-control custom-input" name="observacao"
+                      rows="3">{{ ag.observacao }}</textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Salvar</button>
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
       {% else %}
-        <div class="alert alert-warning mt-3">Este paciente ainda não possui agendamentos.</div>
+      <div class="alert alert-warning mt-3">Este paciente ainda não possui agendamentos.</div>
       {% endif %}
 
     </div>
   </div>
 </section>
+{% endblock %}
 
+{% block extra_js %}
 <script>
   function aplicarFiltroStatus() {
     const statusSelecionado = document.getElementById('filtroStatus').value;
@@ -240,7 +235,4 @@
 
   document.getElementById('filtroStatus')?.addEventListener('change', aplicarFiltroStatus);
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

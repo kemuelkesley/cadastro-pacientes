@@ -1,299 +1,222 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento</title>
+{% block extra_css %}
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/calendario.css' %}">
+{% endblock %}
 
-    <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
-
-    <!-- FullCalendar será carregado no final do body -->
-
-    {% include "partials/fontes.html" %}
-
-    <!-- CSS custom -->
-    
-    
-    <link rel="stylesheet" href="{% static 'assets/css/navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/calendario.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
-
-
-</head>
-
-<body>    
-
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a href="{% url 'index' %}" class="navbar-brand">
-                <i class="bi bi-hospital-fill"></i> Clínica Vida
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'index' %}">Início</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'listar_agendamentos' %}">Agendamentos</a>
-                    </li>                    
-                </ul>
-
-
-                {% if user.is_authenticated %}
-                    <div class="dropdown ms-3">
-                        <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> {{ user.username }}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" target="_blank" href="http://127.0.0.1:8000/admin/">
-                                    <i class="bi bi-person-fill-gear"></i> Administração
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'deslogar_usuario' %}">
-                                    <i class="bi bi-box-arrow-right"></i> Sair
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-
-    <!-- Loader -->
-    <div id="loader" class="loading">    
-        <div class="spinner-border text-success" role="status" style="width: 4rem; height: 4rem;">
-            <span class="visually-hidden">Carregando...</span>
-        </div>
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-header bg-success text-white py-3 rounded-top-4">
+      <h4 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i> Agendamento de Consulta</h4>
     </div>
-
-
-  <div class="container mt-5">
-    <div class="card shadow-lg border-0 rounded-4">
-      <div class="card-header bg-success text-white py-3 rounded-top-4">
-        <h4 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i> Agendamento de Consulta</h4>
-      </div>
-      <div class="card-body p-4">
-        <div class="row">
-          <!-- CALENDÁRIO -->
-          <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm">
-              <div class="card-header bg-light fw-semibold">
-                Datas e horários ocupados
-              </div>
-              <div class="card-body">
-                <div id="calendar"></div>
-              </div>
+    <div class="card-body p-4">
+      <div class="row">
+        <!-- CALENDÁRIO -->
+        <div class="col-md-6 mb-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light fw-semibold">
+              Datas e horários ocupados
+            </div>
+            <div class="card-body">
+              <div id="calendar"></div>
             </div>
           </div>
+        </div>
 
-          <!-- FORMULÁRIO -->
-          <div class="col-md-6 mb-4">
-            {% if form.errors %}
-            <div class="alert alert-danger">
-              <ul class="mb-0">
-                {% for field in form %}
-                {% for error in field.errors %}
-                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-
-            <form method="POST" novalidate>
-              {% csrf_token %}
-              <div class="mb-3">
-                <label for="id_paciente" class="form-label fw-semibold">Paciente</label>
-                {{ form.paciente }}
-              </div>
-
-              <div class="mb-3">
-                <label for="id_medico" class="form-label fw-semibold">Médico</label>
-                {{ form.medico }}
-              </div>
-
-              <div class="mb-3">
-                <label for="id_especialidade" class="form-label fw-semibold">Especialidade</label>
-                {{ form.especialidade }}
-              </div>
-
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="id_data_agendamento" class="form-label fw-semibold">Data</label>
-                  {{ form.data_agendamento }}
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="id_hora_agendamento" class="form-label fw-semibold">Hora</label>
-                  {{ form.hora_agendamento }}
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="id_observacao" class="form-label fw-semibold">Observação</label>
-                {{ form.observacao }}
-              </div>
-
-              <div class="d-flex justify-content-between">
-                <a href="{% url 'index' %}" class="btn btn-outline-secondary">
-                  <i class="bi bi-arrow-left"></i> Voltar
-                </a>
-                <button type="submit" class="btn btn-success px-4">
-                  <i class="bi bi-check-circle-fill me-1"></i> Agendar
-                </button>
-              </div>
-            </form>
+        <!-- FORMULÁRIO -->
+        <div class="col-md-6 mb-4">
+          {% if form.errors %}
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              {% for field in form %}
+              {% for error in field.errors %}
+              <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+              {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
           </div>
+          {% endif %}
+
+          <form method="POST" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_paciente" class="form-label fw-semibold">Paciente</label>
+              {{ form.paciente }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_medico" class="form-label fw-semibold">Médico</label>
+              {{ form.medico }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_especialidade" class="form-label fw-semibold">Especialidade</label>
+              {{ form.especialidade }}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="id_data_agendamento" class="form-label fw-semibold">Data</label>
+                {{ form.data_agendamento }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_hora_agendamento" class="form-label fw-semibold">Hora</label>
+                {{ form.hora_agendamento }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_observacao" class="form-label fw-semibold">Observação</label>
+              {{ form.observacao }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'index' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+              </a>
+              <button type="submit" class="btn btn-success px-4">
+                <i class="bi bi-check-circle-fill me-1"></i> Agendar
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Modal de Horário Ocupado -->
-  <div class="modal fade" id="modalHorarioOcupado" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-success">
-        <div class="modal-header bg-success text-white shadow">
-          <h5 class="modal-title" id="modalLabel">Horário já agendado</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <p id="mensagem-horario"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
-          <a href="#" id="btnVerDetalhes" class="btn btn-success">
-            <i class="bi bi-eye-fill me-1"></i> Ver Detalhes
-          </a>
-        </div>
+<!-- Modal de Horário Ocupado -->
+<div class="modal fade" id="modalHorarioOcupado" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white shadow">
+        <h5 class="modal-title" id="modalLabel">Horário já agendado</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="mensagem-horario"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Fechar</button>
+        <a href="#" id="btnVerDetalhes" class="btn btn-success">
+          <i class="bi bi-eye-fill me-1"></i> Ver Detalhes
+        </a>
       </div>
     </div>
   </div>
+</div>
+{% endblock %}
 
-  
+{% block extra_js %}
+<script src="{% static 'js/especialidades_medicos.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-  <!-- JS scripts -->
-  <script src="{% static 'js/loader.js' %}"></script>
-  <script src="{% static 'js/especialidades_medicos.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // URL base para detalhes do paciente (remove o /0/ e deixa apenas /paciente/)
+  const urlDetalhesPaciente = '{% url "detalhes_paciente" 0 %}'.replace('0/', '');
 
-  <script>
-    // URL base para detalhes do paciente (remove o /0/ e deixa apenas /paciente/)
-    const urlDetalhesPaciente = '{% url "detalhes_paciente" 0 %}'.replace('0/', '');
-    
-    document.addEventListener('DOMContentLoaded', function () {
-      // Flatpickr com bloqueio de sábado e domingo e datas anteriores ao dia atual
-      flatpickr("#id_data_agendamento", {
-        dateFormat: "Y-m-d",
-        altInput: true,
-        altFormat: "d/m/Y",
-        locale: "pt",
-        minDate: "today",
-        disable: [
-          function (date) {
-            return (date.getDay() === 0 || date.getDay() === 6);
-          }
-        ],
-        onChange: function (selectedDates, dateStr) {
-          if (dateStr) {
-            atualizarHorasDisponiveis(dateStr);
-          }
+  document.addEventListener('DOMContentLoaded', function () {
+    // Flatpickr com bloqueio de sábado e domingo e datas anteriores ao dia atual
+    flatpickr("#id_data_agendamento", {
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "d/m/Y",
+      locale: "pt",
+      minDate: "today",
+      disable: [
+        function (date) {
+          return (date.getDay() === 0 || date.getDay() === 6);
         }
-      });
+      ],
+      onChange: function (selectedDates, dateStr) {
+        if (dateStr) {
+          atualizarHorasDisponiveis(dateStr);
+        }
+      }
+    });
 
-      // Configuração do FullCalendar
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        slotDuration: '00:30:00',
-        slotMinTime: '07:00:00',
-        slotMaxTime: '17:00:00',
-        allDaySlot: false,
-        locale: 'pt-br',
-        hiddenDays: [0, 6],
-        height: 'auto',       
-        events: '{% url "agendamentos_json" %}',
-        eventContent: function(arg) {
-          // Extrai a hora completa do evento (formato HH:MM)
-          const startDate = new Date(arg.event.start);
-          const horas = String(startDate.getHours()).padStart(2, '0');
-          const minutos = String(startDate.getMinutes()).padStart(2, '0');
-          const hora = horas + ':' + minutos;
-          
-          // Pega o nome do paciente do título ou extendedProps
-          const nome = arg.event.title || arg.event.extendedProps.paciente || '';
-          
-          // Formata com bolinha verde, hora completa e nome - tudo dentro do quadrado
-          return {
-            html: '<div class="fc-event-content-wrapper"><span class="fc-event-dot-green"></span><span class="fc-event-time-green">' + hora + '</span> <span class="fc-event-title-bold">' + nome + '</span></div>'
-          };
-        },
-        buttonText: {
+    // Configuração do FullCalendar
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      slotDuration: '00:30:00',
+      slotMinTime: '07:00:00',
+      slotMaxTime: '17:00:00',
+      allDaySlot: false,
+      locale: 'pt-br',
+      hiddenDays: [0, 6],
+      height: 'auto',
+      events: '{% url "agendamentos_json" %}',
+      eventContent: function (arg) {
+        // Extrai a hora completa do evento (formato HH:MM)
+        const startDate = new Date(arg.event.start);
+        const horas = String(startDate.getHours()).padStart(2, '0');
+        const minutos = String(startDate.getMinutes()).padStart(2, '0');
+        const hora = horas + ':' + minutos;
+
+        // Pega o nome do paciente do título ou extendedProps
+        const nome = arg.event.title || arg.event.extendedProps.paciente || '';
+
+        // Formata com bolinha verde, hora completa e nome - tudo dentro do quadrado
+        return {
+          html: '<div class="fc-event-content-wrapper"><span class="fc-event-dot-green"></span><span class="fc-event-time-green">' + hora + '</span> <span class="fc-event-title-bold">' + nome + '</span></div>'
+        };
+      },
+      buttonText: {
         today: 'Hoje',
-        },
-        eventClick: function (info) {
-          const paciente = info.event.extendedProps.paciente;
-          const pacienteId = info.event.extendedProps.paciente_id;
-          const medico = info.event.extendedProps.medico;
-          const especialidade = info.event.extendedProps.especialidade;
+      },
+      eventClick: function (info) {
+        const paciente = info.event.extendedProps.paciente;
+        const pacienteId = info.event.extendedProps.paciente_id;
+        const medico = info.event.extendedProps.medico;
+        const especialidade = info.event.extendedProps.especialidade;
 
-          // Usa info.event.start que é a propriedade correta do FullCalendar
-          const horario = new Date(info.event.start).toLocaleString('pt-BR', {
-            hour: '2-digit', minute: '2-digit'
-          });
+        // Usa info.event.start que é a propriedade correta do FullCalendar
+        const horario = new Date(info.event.start).toLocaleString('pt-BR', {
+          hour: '2-digit', minute: '2-digit'
+        });
 
-          const data = new Date(info.event.start).toLocaleDateString('pt-BR');
+        const data = new Date(info.event.start).toLocaleDateString('pt-BR');
 
-          const mensagem = `
+        const mensagem = `
 		 	 O horário <strong>${horario}</strong> do dia <strong>${data}</strong> já está agendado para:
 			 <strong>Paciente:</strong> ${paciente} <br>
 			 <strong>Médico:</strong> ${medico} <br>
 			 <strong>Especialidade:</strong> ${especialidade} <br>
 		  `;
 
-          // Configura o link do botão "Ver Detalhes" para a página de detalhes do paciente
-          const btnVerDetalhes = document.getElementById('btnVerDetalhes');
-          if (pacienteId) {
-            // Remove a classe disabled se existir
-            btnVerDetalhes.classList.remove('disabled');
-            // Constrói a URL: /paciente/{id}/
-            btnVerDetalhes.href = urlDetalhesPaciente + pacienteId + '/';
-          } else {
-            // Fallback: desabilita o botão se não houver ID do paciente
-            btnVerDetalhes.href = '#';
-            btnVerDetalhes.classList.add('disabled');
-          }
-
-          document.getElementById('mensagem-horario').innerHTML = mensagem;
-          const modal = new bootstrap.Modal(document.getElementById('modalHorarioOcupado'));
-          modal.show();
+        // Configura o link do botão "Ver Detalhes" para a página de detalhes do paciente
+        const btnVerDetalhes = document.getElementById('btnVerDetalhes');
+        if (pacienteId) {
+          // Remove a classe disabled se existir
+          btnVerDetalhes.classList.remove('disabled');
+          // Constrói a URL: /paciente/{id}/
+          btnVerDetalhes.href = urlDetalhesPaciente + pacienteId + '/';
+        } else {
+          // Fallback: desabilita o botão se não houver ID do paciente
+          btnVerDetalhes.href = '#';
+          btnVerDetalhes.classList.add('disabled');
         }
-      });
-      calendar.render();
+
+        document.getElementById('mensagem-horario').innerHTML = mensagem;
+        const modal = new bootstrap.Modal(document.getElementById('modalHorarioOcupado'));
+        modal.show();
+      }
     });
-  </script>
- 
-  </body>
-</html>
+    calendar.render();
+  });
+</script>
+{% endblock %}

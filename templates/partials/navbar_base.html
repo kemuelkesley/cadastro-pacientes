@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg top-navbar">
+    <div class="container-fluid">
+
+        <!-- Botão para abrir sidebar no mobile -->
+        <button type="button" id="sidebarCollapse" class="btn btn-outline-success d-md-none">
+            <i class="bi bi-list"></i> Menu
+        </button>
+
+        <!-- Informações da conta -->
+        <div class="ms-auto d-flex align-items-center">
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-white"
+                    id="navbarDropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="me-2 d-none d-sm-inline fw-semibold">{{ user.username }}</span>
+                    <i class="bi bi-person-circle fs-4 text-white me-2"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdownUser">
+                    <li>
+                        <a class="dropdown-item py-2" href="{% url 'admin:index' %}">
+                            <i class="bi bi-shield-lock me-2 text-warning"></i> Painel Admin (Django)
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-danger py-2 fw-semibold" href="{% url 'deslogar_usuario' %}">
+                            <i class="bi bi-box-arrow-left me-2"></i> Sair do Sistema
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

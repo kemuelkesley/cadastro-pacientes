@@ -1,0 +1,49 @@
+{% load static %}
+<nav id="sidebar" class="sidebar sidebar-container">
+    <div class="sidebar-inner">
+        <div class="sidebar-header">
+            <h5 class="header-brand m-0 d-flex align-items-center">
+                <i class="bi bi-hospital-fill text-success"></i>
+                <span class="link-text ms-2 mt-1">Clínica Vida</span>
+            </h5>
+
+            <!-- Botão para fechar/abrir no desktop -->
+            <button type="button" class="btn border-0 text-white d-none d-md-block toggle-btn" id="sidebarToggleBtn"
+                title="Expandir menu">
+                <i class="bi bi-list fs-3"></i>
+            </button>
+
+            <!-- Botão para fechar sidebar no mobile (X) -->
+            <button type="button" class="btn-close btn-close-white d-md-none" id="sidebarCollapseClose"
+                aria-label="Close"></button>
+        </div>
+
+
+        <ul class="list-unstyled components mt-2">
+            <li class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                <a href="{% url 'index' %}" class="sidebar-link" title="Início">
+                    <i class="bi bi-house-door"></i>
+                    <span class="link-text">Início</span>
+                </a>
+            </li>
+            <li class="{% if 'clinica' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'clinica_list' %}" class="sidebar-link" title="Pacientes">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span class="link-text">Pacientes</span>
+                </a>
+            </li>
+            <li class="{% if 'medico' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'medico_list' %}" class="sidebar-link" title="Médicos">
+                    <i class="bi bi-person-badge"></i>
+                    <span class="link-text">Médicos</span>
+                </a>
+            </li>
+            <li class="{% if 'agendamento' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'listar_agendamentos' %}" class="sidebar-link" title="Agendamentos">
+                    <i class="bi bi-calendar-check"></i>
+                    <span class="link-text">Agendamentos</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

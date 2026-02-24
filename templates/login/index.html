@@ -1,117 +1,77 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Clínica Vida - Página Inicial</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+{% block content %}
 
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
-    
-
-    {% include "partials/fontes.html" %}
-
-</head>
-<body>
-
-    {% include "partials/navbar.html" %}
-
-    <!-- Loader -->
-    <div id="loader" class="loading">    
-        <div class="spinner-border text-success" role="status" style="width: 4rem; height: 4rem;">
-            <span class="visually-hidden">Carregando...</span>
-        </div>
+<!-- Seção de Boas-Vindas -->
+<section class="welcome-section mb-4">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">
+            Bem-vindo à <span>Clínica Vida</span>
+        </h1>
+        <p class="lead">Cuidando da sua saúde com carinho.</p>
     </div>
+</section>
 
+<!-- Seção de Ações -->
+<div class="container">
+    <div class="row justify-content-center g-4">
 
-    <!-- Seção de Boas-Vindas -->
-    <section class="welcome-section">
-        <div class="container">
-            <h1 class="display-5 fw-bold">
-                Bem-vindo à <span>Clínica Vida</span>
-            </h1>
-            <p class="lead">Cuidando da sua saúde com carinho.</p>
-        </div>
-    </section>
-
-    <!-- Seção de Ações -->
-    <div class="container py-5">
-        <div class="row justify-content-center g-4">
-
-            <!-- Cadastrar Paciente -->
-            <div class="col-md-5 col-lg-4">
-                <div class="card card-index text-center bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title text-success">
-                            <i class="bi bi-person-plus-fill"></i><br>Cadastrar Paciente
-                        </h5>
-                        <p class="card-text">Adicione novos pacientes ao sistema.</p>
-                        <a href="{% url 'clinica_list' %}" class="btn btn-green">Ir para Cadastro</a>
-                    </div>
-                </div>
-            </div>           
-
-            <!-- Agendar Consulta -->
-            <div class="col-md-5 col-lg-4">
-                <div class="card card-index text-center bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">
-                            <i class="bi bi-calendar-plus"></i><br>Agendar Consulta
-                        </h5>
-                        <p class="card-text">Crie um novo agendamento médico.</p>
-                        <a href="{% url 'agendar_consulta' %}" class="btn btn-blue">Agendar</a>
-                    </div>
+        <!-- Cadastrar Paciente -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card card-index text-center bg-white shadow-sm">
+                <div class="card-body py-5">
+                    <h5 class="card-title text-success fs-4">
+                        <i class="bi bi-person-plus-fill fs-1 mb-2 d-block"></i>
+                        Cadastrar Paciente
+                    </h5>
+                    <p class="card-text text-muted mb-4">Adicione novos pacientes ao sistema.</p>
+                    <a href="{% url 'clinica_list' %}" class="btn btn-success btn-lg px-4 w-100 round-btn">Ir para
+                        Cadastro</a>
                 </div>
             </div>
+        </div>
 
-
-            
-           <!-- Cadastrar Médico -->
-            <div class="col-md-5 col-lg-4">
-                <div class="card card-index text-center bg-white">
-                    <div class="card-body">
-                        <h5 class="card-title text-purple">
-                            <i class="bi bi-person-badge-fill"></i><br>Cadastrar Médico
-                        </h5>
-                        <p class="card-text">Gerencie médicos e suas especialidades.</p>
-                        <a href="{% url 'medico_list' %}" class="btn btn-purple">Gerenciar</a>
-                    </div>
+        <!-- Agendar Consulta -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card card-index text-center bg-white shadow-sm">
+                <div class="card-body py-5">
+                    <h5 class="card-title text-primary fs-4">
+                        <i class="bi bi-calendar-plus fs-1 mb-2 d-block"></i>
+                        Agendar Consulta
+                    </h5>
+                    <p class="card-text text-muted mb-4">Crie um novo agendamento médico.</p>
+                    <a href="{% url 'agendar_consulta' %}"
+                        class="btn btn-primary btn-lg px-4 w-100 round-btn">Agendar</a>
                 </div>
             </div>
-
         </div>
+
+        <!-- Cadastrar Médico -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card card-index text-center bg-white shadow-sm">
+                <div class="card-body py-5">
+                    <h5 class="card-title text-purple fs-4" style="color: #6f42c1;">
+                        <i class="bi bi-person-badge-fill fs-1 mb-2 d-block"></i>
+                        Cadastrar Médico
+                    </h5>
+                    <p class="card-text text-muted mb-4">Gerencie médicos e suas especialidades.</p>
+                    <a href="{% url 'medico_list' %}" class="btn btn-lg px-4 w-100 round-btn text-white"
+                        style="background-color: #6f42c1;">Gerenciar</a>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Seção KemSoftware com ícone de saúde -->
-    <section class="text-center py-5">
-        <div class="container">
-            <i class="bi bi-heart-pulse-fill text-success mb-3"></i>
-            <h2 class="fw-bold text-success">KemSoftware</h2>
-            <p class="lead text-muted">Tecnologia a serviço da sua saúde</p>
-        </div>
-    </section>
+<!-- Seção KemSoftware com ícone de saúde -->
+<section class="text-center py-5 mt-5">
+    <div class="container">
+        <i class="bi bi-heart-pulse-fill text-success fs-2 mb-3 d-block"></i>
+        <h2 class="fw-bold text-success mb-2">KemSoftware</h2>
+        <p class="lead text-muted">Tecnologia a serviço da sua saúde</p>
+    </div>
+</section>
 
-
-    {% include "partials/footer.html" %}
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous">
-    </script>
-    <script>
-        // Esconde o loader depois que a página estiver totalmente carregada
-        window.addEventListener('load', function () {
-            const loader = document.getElementById('loader');
-            loader.style.opacity = '0';
-            loader.style.transition = 'opacity 0.7s ease';
-
-            setTimeout(() => loader.style.display = 'none', 500); 
-        });
-    </script>
-</body>
-</html>
+{% endblock content %}
