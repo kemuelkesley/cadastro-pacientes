@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-label="kemsoftware logo">
+  <defs>
+    <style>
+      .kem { font: 700 72px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; letter-spacing: -1px; }
+      .soft { font: 500 72px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; letter-spacing: -1px; }
+      .tag { font: 500 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; opacity: .75; }
+    </style>
+  </defs>
+
+  <!-- ícone simples -->
+  <g transform="translate(36,36)">
+    <rect x="0" y="0" width="108" height="108" rx="22" fill="#23282D"></rect>
+    <path d="M28 58 L52 34 L80 34 L56 58 L80 82 L52 82 Z" fill="#4CB5F5"></path>
+    <rect x="28" y="82" width="52" height="12" rx="6" fill="#CED2CC" opacity=".9"></rect>
+  </g>
+
+  <!-- texto -->
+  <text x="170" y="92" class="kem" fill="#23282D">kem</text>
+  <text x="300" y="92" class="soft" fill="#4CB5F5">software</text>
+  <text x="172" y="130" class="tag" fill="#1F3F49">technology • automation • solutions</text>
+</svg>
