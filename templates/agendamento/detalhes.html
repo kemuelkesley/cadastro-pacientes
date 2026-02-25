@@ -191,9 +191,9 @@
                   <div class="mb-3">
                     <label class="form-label">Status</label>
                     <select class="form-select custom-input" name="status">
-                      <option value="AG" {% if ag.status=='AG' %}selected{% endif %}>Agendado</option>
-                      <option value="CA" {% if ag.status=='CA' %}selected{% endif %}>Cancelado</option>
-                      <option value="FA" {% if ag.status=='FA' %}selected{% endif %}>Faltou</option>
+                      <option value="AG" {% if "AG" in ag.status %}selected{% endif %}>Agendado</option>
+                      <option value="CA" {% if "CA" in ag.status %}selected{% endif %}>Cancelado</option>
+                      <option value="FA" {% if "FA" in ag.status %}selected{% endif %}>Faltou</option>
                     </select>
                   </div>
                   <div class="mb-3">

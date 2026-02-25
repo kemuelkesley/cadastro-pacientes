@@ -45,8 +45,7 @@
                 <li class="list-group-item"><strong>Nome:</strong> {{ contato.nome }}</li>
                 <li class="list-group-item"><strong>CPF:</strong> {{ contato.cpf|default:"Não informado" }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ contato.email }}</li>
-                <li class="list-group-item"><strong>Data de Nascimento:</strong> {{ contato.data_nascimento |
-                    date:"d/m/Y" }}</li>
+                <li class="list-group-item"><strong>Data de Nascimento:</strong> {{ contato.data_nascimento | date:"d/m/Y" }}</li>
                 <li class="list-group-item"><strong>Celular:</strong> {{ contato.celular.as_national }} </li>
                 <li class="list-group-item"><strong>CEP:</strong> {{ contato.cep|default:"Não informado" }}</li>
                 <li class="list-group-item"><strong>Estado:</strong> {{ contato.estado|default:"Não informado" }}</li>
