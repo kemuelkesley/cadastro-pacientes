@@ -51,8 +51,8 @@
       </form>
 
       <div class="table-responsive">
-        <table class="table align-middle">
-          <thead>
+        <table class="table table-hover align-middle">
+          <thead class="table-success">
             <tr>
               <th>Médico</th>
               <th>CRM</th>
@@ -66,7 +66,7 @@
           <tbody>
             {% for m in medicos %}
             <tr>
-              <td class="fw-semibold">
+              <td>
                 <i class="bi bi-person-badge"></i> {{ m.nome }}
               </td>
 
@@ -107,8 +107,8 @@
 
               <td class="text-end">
                 <!-- Editar médico -->
-                <a href="{% url 'medico_update' m.id %}" class="btn btn-sm btn-outline-primary" title="Editar médico">
-                  <i class="bi bi-pencil-square"></i>
+                <a href="{% url 'medico_update' m.id %}" class="btn btn-sm btn-outline-success" title="Editar médico">
+                  <i class="bi bi-pencil"></i>
                 </a>
 
                 <!-- Excluir médico (confirmação via POST) -->
