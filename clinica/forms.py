@@ -384,13 +384,18 @@ class MedicoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Se estiver editando, marcar especialidades atuais como selecionadas
+        # Se estiver editando
         if self.instance and self.instance.pk:
+            # Seleciona especialidades atuais vinculadas
             atuais = Especialidade.objects.filter(
                 medicoespecialidade__medico=self.instance,
                 medicoespecialidade__ativo=True,
             ).distinct()
             self.fields["especialidades"].initial = atuais
+
+            # Extrai o código nacional do telefone (remove o +55 do DDI) para a máscara jQuery funcionar
+            if self.instance.celular:
+                self.initial["celular"] = str(self.instance.celular.national_number)
 
     def clean_uf_crm(self):
         uf = (self.cleaned_data.get("uf_crm") or "").strip().upper()
