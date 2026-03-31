@@ -351,6 +351,18 @@ class MedicoForm(forms.ModelForm):
         label="Especialidades",
     )
 
+    celular = forms.CharField(
+        label='Celular', 
+        max_length=15, 
+        required=True,
+        validators=[validate_celular],   
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'data-mask':"(00) 00000-0000", 
+            'placeholder': '(xx) xxxxx-xxxx'
+        }),
+    )
+
     class Meta:
         model = Medico
         fields = ["nome", "crm", "uf_crm", "email", "celular", "ativo"]  # campos do seu HTML
@@ -359,12 +371,10 @@ class MedicoForm(forms.ModelForm):
             "crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: 12345"}),
             "uf_crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "SP", "maxlength": "2"}),
             "email": forms.EmailInput(attrs={"class": "form-control custom-input", "placeholder": "medico@clinica.com"}),
-            "celular": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "(xx) xxxxx-xxxx"}),
         }
         labels = {
             "nome": "Nome do Médico",
             "uf_crm": "UF CRM",
-            "celular": "Celular",
         }
 
     def __init__(self, *args, **kwargs):
