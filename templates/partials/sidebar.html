@@ -44,6 +44,12 @@
                     <span class="link-text">Agendamentos</span>
                 </a>
             </li>
+            <li class="{% if 'financeiro' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'financeiro_list' %}" class="sidebar-link" title="Financeiro">
+                    <i class="bi bi-cash-coin"></i>
+                    <span class="link-text">Financeiro</span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

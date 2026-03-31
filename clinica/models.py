@@ -164,6 +164,7 @@ class Agendamento(models.Model):
         ('AG', 'Agendado'),
         ('CA', 'Cancelado'),
         ('FA', 'Faltou'),
+        ('FI', 'Finalizado'),
     ]
 
     paciente = models.ForeignKey("Contato", on_delete=models.CASCADE)
@@ -172,6 +173,12 @@ class Agendamento(models.Model):
 
     data_agendamento = models.DateField(verbose_name="Data do Agendamento")
     hora_agendamento = models.TimeField(verbose_name="Hora do Agendamento")
+
+    # Registro financeiro "imutável" da consulta para relatório
+    valor_consulta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    porcentagem_repasse = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    valor_medico = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    valor_clinica = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG')
@@ -208,6 +215,17 @@ class Agendamento(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
+
+        if self.status == 'FI' and self.valor_consulta is None:
+            if self.medico and self.medico.valor_consulta is not None:
+                self.valor_consulta = self.medico.valor_consulta
+                self.porcentagem_repasse = self.medico.porcentagem_repasse
+
+                # Faz o rateio
+                if self.valor_consulta is not None and self.porcentagem_repasse is not None:
+                    self.valor_medico = self.valor_consulta * (self.porcentagem_repasse / 100)
+                    self.valor_clinica = self.valor_consulta - self.valor_medico
+
         return super().save(*args, **kwargs)
 
     def __str__(self):

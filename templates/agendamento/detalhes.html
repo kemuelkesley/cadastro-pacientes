@@ -122,6 +122,7 @@
             <option value="AG">Agendados</option>
             <option value="CA">Cancelados</option>
             <option value="FA">Faltou</option>
+            <option value="FI">Finalizado</option>
           </select>
         </div>
       </div>
@@ -194,6 +195,7 @@
                       <option value="AG" {% if "AG" in ag.status %}selected{% endif %}>Agendado</option>
                       <option value="CA" {% if "CA" in ag.status %}selected{% endif %}>Cancelado</option>
                       <option value="FA" {% if "FA" in ag.status %}selected{% endif %}>Faltou</option>
+                      <option value="FI" {% if "FI" in ag.status %}selected{% endif %}>Finalizado</option>
                     </select>
                   </div>
                   <div class="mb-3">

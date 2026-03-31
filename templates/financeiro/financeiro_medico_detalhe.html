@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<!-- Seus CSS -->
+<link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/inputs.css' %}">
+
+<style>
+  .card-financeiro {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+  }
+
+  /* REGRAS EXCLUSIVAS PARA IMPRESSÃO / PDF */
+  @media print {
+    /* Esconde botões, navbar, barra lateral, e filtros de ano/mês */
+    nav, .sidebar, header, .btn, form, footer, .no-print {
+      display: none !important;
+    }
+
+    body {
+      background-color: #fff !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container, main {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .card {
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    .table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    
+    .table th, .table td {
+      border: 1px solid #ddd !important;
+      padding: 8px !important;
+      font-size: 12px !important;
+    }
+    
+    .table-success th {
+      background-color: #d1e7dd !important;
+      -webkit-print-color-adjust: exact;
+      color: #0f5132 !important;
+    }
+
+    /* Adiciona um título amigável na impressão que estava escondido na tela da grid */
+    .print-header {
+      display: block !important;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  }
+
+  .print-header {
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="container mt-1">
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-2 no-print">
+    <h3 class="fw-bold mb-0 text-success">
+      <i class="bi bi-person-lines-fill me-2"></i> Extrato: {{ medico.nome }}
+    </h3>
+    <a href="{% url 'financeiro_list' %}?mes={{ mes_selecionado }}&ano={{ ano_selecionado }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 mb-4">
+    <div class="card-body p-4">
+
+      <!-- Barra de Filtros (Escondida no Print) -->
+      <form method="get" class="row g-3 align-items-end mb-4 no-print border-bottom pb-4">
+        <div class="col-md-3">
+          <label class="form-label text-success fw-bold">Mês</label>
+          <select name="mes" class="form-select custom-input">
+            {% for m_num, m_nome in meses %}
+              <option value="{{ m_num }}" {% if m_num == mes_selecionado %}selected{% endif %}>{{ m_nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label text-success fw-bold">Ano</label>
+          <select name="ano" class="form-select custom-input">
+            {% for a in anos %}
+              <option value="{{ a }}" {% if a == ano_selecionado %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-success" type="submit">
+            <i class="bi bi-funnel"></i> Filtrar
+          </button>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-end gap-2">
+            <!-- Botão de Excel (CSV) -->
+            <a href="{% url 'financeiro_medico_detalhe' pk=medico.id %}?mes={{ mes_selecionado }}&ano={{ ano_selecionado }}&export=csv" class="btn btn-outline-success" title="Baixar Planilha">
+                <i class="bi bi-file-earmark-excel-fill"></i> Baixar Excel
+            </a>
+            <!-- Botão de Print PDF -->
+            <button onclick="window.print()" class="btn btn-success" title="Imprimir / Salvar PDF">
+                <i class="bi bi-printer-fill"></i> PDF
+            </button>
+        </div>
+      </form>
+
+      <!-- Cabeçalho Exclusivo da Folha Impressa (PDF) -->
+      <div class="print-header">
+        <h2>Clínica - Relatório Financeiro</h2>
+        <h4>Médico(a): {{ medico.nome }}</h4>
+        <p><strong>Período:</strong> {{ mes_selecionado }}/{{ ano_selecionado }} | <strong>CRM:</strong> {{ medico.crm }}/{{ medico.uf_crm }}</p>
+      </div>
+
+      <div class="row text-center mb-4 pb-3 border-bottom no-print">
+        <div class="col-md-4">
+            <h5 class="text-muted">Atendimentos</h5>
+            <h3 class="text-success fw-bold">{{ total_atendimentos }}</h3>
+        </div>
+        <div class="col-md-4">
+            <h5 class="text-muted">Repasse Previsto</h5>
+            <h3 class="text-primary fw-bold">R$ {{ total_medico|floatformat:2 }}</h3>
+        </div>
+        <div class="col-md-4">
+            <h5 class="text-muted">Total Bruto Clínico</h5>
+            <h3 class="text-success fw-bold">R$ {{ total_gerado|floatformat:2 }}</h3>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+          <thead class="table-success text-center">
+            <tr>
+              <th>Data e Hora</th>
+              <th class="text-start">Paciente</th>
+              <th class="text-start">Especialidade (Serviço)</th>
+              <th class="text-end">V. Consulta</th>
+              <th class="text-end">R. Médico</th>
+              <th class="text-end">P. Clínica</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for a in agendamentos %}
+            <tr class="text-center">
+              <td>
+                <span class="fw-bold">{{ a.data_agendamento|date:"d/m/Y" }}</span><br>
+                <small class="text-muted">{{ a.hora_agendamento|time:"H:i" }}</small>
+              </td>
+
+              <td class="text-start fw-semibold">
+                {{ a.paciente.nome }}
+              </td>
+
+              <td class="text-start">
+                {{ a.especialidade.nome|default:"-" }}
+              </td>
+
+              <td class="text-end text-success fw-bold">
+                R$ {{ a.valor_consulta|default:"0.00"|floatformat:2 }}
+              </td>
+
+              <td class="text-end text-primary fw-semibold">
+                R$ {{ a.valor_medico|default:"0.00"|floatformat:2 }}
+              </td>
+
+              <td class="text-end text-success fw-bold">
+                R$ {{ a.valor_clinica|default:"0.00"|floatformat:2 }}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-folder-x mb-3 fs-1 d-block"></i>
+                <h5>Nenhum atendimento finalizado constando neste período.</h5>
+              </td>
+            </tr>
+            {% endfor %}
+
+            <!-- Linha de total para impressão ficar bonita tmb -->
+            {% if agendamentos %}
+            <tr class="table-active fw-bold text-center">
+                <td colspan="3" class="text-end">TOTAL CONSOLIDADO:</td>
+                <td class="text-end text-success">R$ {{ total_gerado|floatformat:2 }}</td>
+                <td class="text-end text-primary">R$ {{ total_medico|floatformat:2 }}</td>
+                <td class="text-end text-success">R$ {{ total_clinica|floatformat:2 }}</td>
+            </tr>
+            {% endif %}
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+{% endblock %}

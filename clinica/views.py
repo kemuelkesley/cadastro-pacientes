@@ -649,3 +649,119 @@ def deletar_medico(request, pk):
         return redirect("medico_list")
 
     return HttpResponseNotAllowed(["GET", "POST"])
+
+
+from django.db.models import Sum, Count
+from django.utils.timezone import now
+
+@login_required
+def financeiro_list(request):
+    mes_str = request.GET.get('mes')
+    ano_str = request.GET.get('ano')
+    
+    agora = now()
+    try:
+        mes = int(mes_str) if mes_str else agora.month
+        ano = int(ano_str) if ano_str else agora.year
+    except ValueError:
+        mes = agora.month
+        ano = agora.year
+        
+    medicos = Medico.objects.annotate(
+        qtd_atendimentos=Count('agendamento', filter=Q(agendamento__status='FI', agendamento__data_agendamento__month=mes, agendamento__data_agendamento__year=ano)),
+        total_gerado=Sum('agendamento__valor_consulta', filter=Q(agendamento__status='FI', agendamento__data_agendamento__month=mes, agendamento__data_agendamento__year=ano)),
+        total_repasse=Sum('agendamento__valor_medico', filter=Q(agendamento__status='FI', agendamento__data_agendamento__month=mes, agendamento__data_agendamento__year=ano)),
+        total_clinica=Sum('agendamento__valor_clinica', filter=Q(agendamento__status='FI', agendamento__data_agendamento__month=mes, agendamento__data_agendamento__year=ano)),
+    ).order_by('nome')
+    
+    return render(request, "financeiro/financeiro_list.html", {
+        "medicos": medicos,
+        "mes_selecionado": mes,
+        "ano_selecionado": ano,
+        "meses": [
+            (1, "Janeiro"), (2, "Fevereiro"), (3, "Março"), (4, "Abril"),
+            (5, "Maio"), (6, "Junho"), (7, "Julho"), (8, "Agosto"),
+            (9, "Setembro"), (10, "Outubro"), (11, "Novembro"), (12, "Dezembro")
+        ],
+        "anos": range(agora.year - 2, agora.year + 2)
+    })
+
+
+import csv
+from django.http import HttpResponse
+
+@login_required
+def financeiro_medico_detalhe(request, pk):
+    medico = get_object_or_404(Medico, pk=pk)
+    
+    mes_str = request.GET.get('mes')
+    ano_str = request.GET.get('ano')
+    
+    agora = now()
+    try:
+        mes = int(mes_str) if mes_str else agora.month
+        ano = int(ano_str) if ano_str else agora.year
+    except ValueError:
+        mes = agora.month
+        ano = agora.year
+
+    agendamentos = Agendamento.objects.filter(
+        medico=medico,
+        status='FI',
+        data_agendamento__month=mes,
+        data_agendamento__year=ano
+    ).select_related('paciente', 'especialidade').order_by('data_agendamento', 'hora_agendamento')
+
+    # Totalizadores
+    total_atendimentos = agendamentos.count()
+    total_gerado = sum(a.valor_consulta for a in agendamentos if a.valor_consulta)
+    total_medico = sum(a.valor_medico for a in agendamentos if a.valor_medico)
+    total_clinica = sum(a.valor_clinica for a in agendamentos if a.valor_clinica)
+
+    export = request.GET.get('export')
+    if export == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="extrato_{medico.nome.replace(" ", "_")}_{mes}_{ano}.csv"'
+        
+        # Adiciona o BOM do UTF-8 para o Excel reconhecer os acentos corretamente
+        response.write('\ufeff'.encode('utf8'))
+        writer = csv.writer(response, delimiter=';')
+        
+        # Cabeçalho CSV
+        writer.writerow(['Data', 'Hora', 'Paciente', 'Especialidade', 'Valor Cobrado (R$)', 'Repasse Médico (R$)', 'Parte Clínica (R$)'])
+        
+        for a in agendamentos:
+            writer.writerow([
+                a.data_agendamento.strftime('%d/%m/%Y'),
+                a.hora_agendamento.strftime('%H:%M'),
+                a.paciente.nome,
+                a.especialidade.nome if a.especialidade else 'N/A',
+                f'{a.valor_consulta:.2f}' if a.valor_consulta else '0.00',
+                f'{a.valor_medico:.2f}' if a.valor_medico else '0.00',
+                f'{a.valor_clinica:.2f}' if a.valor_clinica else '0.00'
+            ])
+            
+        # Linha de Totais no CSV
+        writer.writerow([])
+        writer.writerow(['TOTAL', f'{total_atendimentos} atendimentos', '', '', f'{total_gerado:.2f}', f'{total_medico:.2f}', f'{total_clinica:.2f}'])
+        
+        return response
+
+    context = {
+        'medico': medico,
+        'agendamentos': agendamentos,
+        'mes_selecionado': mes,
+        'ano_selecionado': ano,
+        'meses': [
+            (1, "Janeiro"), (2, "Fevereiro"), (3, "Março"), (4, "Abril"),
+            (5, "Maio"), (6, "Junho"), (7, "Julho"), (8, "Agosto"),
+            (9, "Setembro"), (10, "Outubro"), (11, "Novembro"), (12, "Dezembro")
+        ],
+        "anos": range(agora.year - 2, agora.year + 2),
+        'total_atendimentos': total_atendimentos,
+        'total_gerado': total_gerado,
+        'total_medico': total_medico,
+        'total_clinica': total_clinica
+    }
+    
+    return render(request, "financeiro/financeiro_medico_detalhe.html", context)
