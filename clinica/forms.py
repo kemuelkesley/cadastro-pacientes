@@ -365,16 +365,20 @@ class MedicoForm(forms.ModelForm):
 
     class Meta:
         model = Medico
-        fields = ["nome", "crm", "uf_crm", "email", "celular", "ativo"]  # campos do seu HTML
+        fields = ["nome", "crm", "uf_crm", "email", "celular", "valor_consulta", "porcentagem_repasse", "ativo"]  # campos do seu HTML
         widgets = {
             "nome": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: Dra. Maria Souza"}),
             "crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: 12345"}),
             "uf_crm": forms.TextInput(attrs={"class": "form-control custom-input", "placeholder": "SP", "maxlength": "2"}),
             "email": forms.EmailInput(attrs={"class": "form-control custom-input", "placeholder": "medico@clinica.com"}),
+            "valor_consulta": forms.NumberInput(attrs={"class": "form-control custom-input", "placeholder": "R$ 0,00", "step": "0.01"}),
+            "porcentagem_repasse": forms.NumberInput(attrs={"class": "form-control custom-input", "placeholder": "Ex: 30", "step": "0.01"}),
         }
         labels = {
             "nome": "Nome do Médico",
             "uf_crm": "UF CRM",
+            "valor_consulta": "Valor da Consulta (R$)",
+            "porcentagem_repasse": "Repasse do Médico (%)",
         }
 
     def __init__(self, *args, **kwargs):

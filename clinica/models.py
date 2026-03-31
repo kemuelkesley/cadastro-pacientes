@@ -76,6 +76,9 @@ class Medico(models.Model):
     email = models.EmailField(blank=True, null=True)
     celular = PhoneNumberField(region='BR')
 
+    valor_consulta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Valor da Consulta")
+    porcentagem_repasse = models.DecimalField(max_digits=5, decimal_places=2, default=30.00, verbose_name="Porcentagem de Repasse (%)", help_text="Ex: 30 para 30%")
+
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 

@@ -73,8 +73,20 @@
             {% for e in form.celular.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
           </div>
 
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">{{ form.valor_consulta.label }}</label>
+            {{ form.valor_consulta }}
+            {% for e in form.valor_consulta.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">{{ form.porcentagem_repasse.label }}</label>
+            {{ form.porcentagem_repasse }}
+            {% for e in form.porcentagem_repasse.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+          </div>
+
           <div class="col-md-2 d-flex align-items-end">
-            <div class="form-check">
+            <div class="form-check mb-2">
               {{ form.ativo }}
               <label class="form-check-label fw-semibold" for="{{ form.ativo.id_for_label }}">Ativo</label>
             </div>
