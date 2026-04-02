@@ -32,6 +32,12 @@
                     <span class="link-text">Pacientes</span>
                 </a>
             </li>
+            <li class="{% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="sidebar-link" title="Dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    <span class="link-text">Dashboard</span>
+                </a>
+            </li>
             <li class="{% if 'medico' in request.resolver_match.url_name %}active{% endif %}">
                 <a href="{% url 'medico_list' %}" class="sidebar-link" title="Médicos">
                     <i class="bi bi-person-badge"></i>

@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/messages.css' %}">
+<style>
+    .card-metric {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-radius: 12px;
+        border: none;
+    }
+
+    .card-metric:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .bg-icon-primary { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+    .bg-icon-success { background: rgba(25, 135, 84, 0.1); color: #198754; }
+    .bg-icon-warning { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+    .bg-icon-danger { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+    .bg-icon-purple { background: rgba(111, 66, 193, 0.1); color: #6f42c1; }
+
+    .schedule-item {
+        border-left: 4px solid transparent;
+        transition: background-color 0.2s;
+    }
+    
+    .schedule-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .border-left-primary { border-left-color: #0d6efd; }
+    .border-left-success { border-left-color: #198754; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-2 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+        <h2 class="fw-bold text-success m-0"><i class="bi bi-speedometer2 me-2"></i> Dashboard</h2>
+        <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> {% now "d \d\e F \d\e Y" %}</span>
+    </div>
+
+    <!-- MAIN METRICS -->
+    <div class="row g-4 mb-5">
+        <!-- Card Pacientes -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-metric shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-icon-primary me-3">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Pacientes Ativos</h6>
+                        <h3 class="fw-bold mb-0">{{ total_pacientes }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Consultas Hoje -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-metric shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-icon-warning me-3">
+                        <i class="bi bi-calendar2-check-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Consultas Hoje</h6>
+                        <h3 class="fw-bold mb-0">{{ total_consultas_hoje }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Faturamento -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-metric shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-icon-success me-3">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Receita Clínica Mês</h6>
+                        <h3 class="fw-bold mb-0 text-success">R$ {{ receita_clinica|floatformat:2 }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Médicos -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-metric shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-icon-purple me-3">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Médicos Ativos</h6>
+                        <h3 class="fw-bold mb-0">{{ total_medicos }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- STATUS DO DIA ATUAL -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="fw-bold text-success"><i class="bi bi-pie-chart-fill me-2"></i> Resumo do Dia</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mt-2">
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-3 px-0 border-bottom">
+                            <span><i class="bi bi-clock-history text-primary me-2"></i> Pendentes / Agendados</span>
+                            <span class="badge bg-primary rounded-pill fs-6">{{ consultas_agendadas }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-3 px-0 border-bottom">
+                            <span><i class="bi bi-check-circle-fill text-success me-2"></i> Finalizadas</span>
+                            <span class="badge bg-success rounded-pill fs-6">{{ consultas_finalizadas }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-3 px-0">
+                            <span><i class="bi bi-x-octagon-fill text-danger me-2"></i> Canceladas / Faltas</span>
+                            <span class="badge bg-danger rounded-pill fs-6">{{ consultas_canceladas_faltas }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTA PRÓXIMAS CONSULTAS -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-success"><i class="bi bi-view-list me-2"></i> Próximos Atendimentos</h5>
+                    <a href="{% url 'listar_agendamentos' %}" class="btn btn-sm btn-outline-success">Ver Agenda Completa</a>
+                </div>
+                <div class="card-body p-0 mt-3">
+                    <div class="list-group list-group-flush">
+                        {% for consulta in proximas_consultas %}
+                        <div class="list-group-item schedule-item border-left-primary py-3 px-4">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <h6 class="mb-1 fw-bold">{{ consulta.hora_agendamento|time:"H:i" }} - {{ consulta.paciente.nome }}</h6>
+                                <span class="badge bg-success-subtle text-success">{{ consulta.get_status_display }}</span>
+                            </div>
+                            <p class="mb-1 text-muted small">
+                                <i class="bi bi-person-badge me-1"></i> {{ consulta.medico.nome }} | 
+                                <i class="bi bi-heart-pulse ms-2 me-1"></i> {{ consulta.especialidade.nome }}
+                            </p>
+                        </div>
+                        {% empty %}
+                        <div class="p-5 text-center text-muted">
+                            <i class="bi bi-emoji-smile fs-1 d-block mb-3"></i>
+                            <h6>Nenhuma consulta pendente programada para hoje.</h6>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{% endblock %}

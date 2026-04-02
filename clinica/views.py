@@ -233,6 +233,55 @@ def index(request):
 
 
 @login_required
+def dashboard(request):
+    agora = now()
+    hoje = agora.date()
+    mes_atual = agora.month
+    ano_atual = agora.year
+
+    total_pacientes = Contato.objects.filter(ativo=True).count()
+    total_medicos = Medico.objects.filter(ativo=True).count()
+
+    consultas_hoje = Agendamento.objects.filter(data_agendamento=hoje)
+    total_consultas_hoje = consultas_hoje.count()
+    consultas_agendadas = consultas_hoje.filter(status='AG').count()
+    consultas_finalizadas = consultas_hoje.filter(status='FI').count()
+    consultas_canceladas_faltas = consultas_hoje.filter(status__in=['CA', 'FA']).count()
+
+    agendamentos_mes = Agendamento.objects.filter(
+        status='FI',
+        data_agendamento__month=mes_atual,
+        data_agendamento__year=ano_atual
+    )
+    
+    # Importação garantida do Sum do topo (já consta na linha 654 pro financeiro, mas o DJango aggregate vai usar)
+    from django.db.models import Sum
+    receita_clinica = agendamentos_mes.aggregate(Sum('valor_clinica'))['valor_clinica__sum'] or 0.00
+    receita_medico = agendamentos_mes.aggregate(Sum('valor_medico'))['valor_medico__sum'] or 0.00
+    receita_total = agendamentos_mes.aggregate(Sum('valor_consulta'))['valor_consulta__sum'] or 0.00
+
+    proximas_consultas = consultas_hoje.filter(
+        status='AG'
+    ).select_related('paciente', 'medico', 'especialidade').order_by('hora_agendamento')[:10]
+
+    context = {
+        'total_pacientes': total_pacientes,
+        'total_medicos': total_medicos,
+        'total_consultas_hoje': total_consultas_hoje,
+        'consultas_agendadas': consultas_agendadas,
+        'consultas_finalizadas': consultas_finalizadas,
+        'consultas_canceladas_faltas': consultas_canceladas_faltas,
+        'receita_clinica': receita_clinica,
+        'receita_medico': receita_medico,
+        'receita_total': receita_total,
+        'proximas_consultas': proximas_consultas,
+    }
+
+    return render(request, 'clinica/dashboard.html', context)
+
+
+
+@login_required
 def agendar_consulta(request):
     if request.method == "POST":
         form = AgendamentoForm(request.POST)
