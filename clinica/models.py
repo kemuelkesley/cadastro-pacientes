@@ -167,6 +167,14 @@ class Agendamento(models.Model):
         ('FI', 'Finalizado'),
     ]
 
+    FORMA_PAGAMENTO_CHOICES = [
+        ('DI', 'Dinheiro'),
+        ('PI', 'PIX'),
+        ('CC', 'Cartão de Crédito'),
+        ('CD', 'Cartão de Débito'),
+        ('PS', 'Plano de Saúde'),
+    ]
+
     paciente = models.ForeignKey("Contato", on_delete=models.CASCADE)
     medico = models.ForeignKey("Medico", on_delete=models.PROTECT)
     especialidade = models.ForeignKey("Especialidade", on_delete=models.PROTECT)
@@ -182,6 +190,7 @@ class Agendamento(models.Model):
 
     observacao = models.TextField(verbose_name="Observação", blank=True, null=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='AG')
+    forma_pagamento = models.CharField(max_length=2, choices=FORMA_PAGAMENTO_CHOICES, blank=True, null=True, verbose_name="Forma de Pagamento")
 
     criado_em = models.DateTimeField(auto_now_add=True)
 

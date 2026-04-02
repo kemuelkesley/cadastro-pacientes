@@ -28,7 +28,7 @@ from clinica.views import (
 
 # URL patterns for the clinica app
 urlpatterns = [
-   path('', logar_usuario, name="root"),
+   path('logar_usuario/', logar_usuario, name="root"),
    path('logar_usuario/', logar_usuario, name="logar_usuario"),
    path('cadastrar_usuario/', cadastrar_usuario, name="cadastrar_usuario"),
    path('deslogar_usuario/', deslogar_usuario, name="deslogar_usuario"),

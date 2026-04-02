@@ -16,8 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.views.defaults import page_not_found
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("clinica.urls")),
 ]
+
+# Rota para facilitar o teste da página 404 no ambiente local (DEBUG = True)
+if settings.DEBUG:
+    urlpatterns += [
+        path('404/', page_not_found, kwargs={'exception': Exception('Página não encontrada')}),
+    ]

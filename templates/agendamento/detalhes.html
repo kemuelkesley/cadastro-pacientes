@@ -191,11 +191,22 @@
                 <div class="modal-body">
                   <div class="mb-3">
                     <label class="form-label">Status</label>
-                    <select class="form-select custom-input" name="status">
+                    <select class="form-select custom-input status-select" name="status" data-target="formaPagamentoDiv{{ ag.id }}">
                       <option value="AG" {% if "AG" in ag.status %}selected{% endif %}>Agendado</option>
                       <option value="CA" {% if "CA" in ag.status %}selected{% endif %}>Cancelado</option>
                       <option value="FA" {% if "FA" in ag.status %}selected{% endif %}>Faltou</option>
                       <option value="FI" {% if "FI" in ag.status %}selected{% endif %}>Finalizado</option>
+                    </select>
+                  </div>
+                  <div class="mb-3" id="formaPagamentoDiv{{ ag.id }}" style="{% if ag.status != 'FI' %}display: none;{% endif %}">
+                    <label class="form-label">Forma de Pagamento <span class="text-danger">*</span></label>
+                    <select class="form-select custom-input" name="forma_pagamento" {% if ag.status == 'FI' %}required{% endif %}>
+                      <option value="">-- Selecione --</option>
+                      <option value="DI" {% if "DI" == ag.forma_pagamento %}selected{% endif %}>Dinheiro</option>
+                      <option value="PI" {% if "PI" == ag.forma_pagamento %}selected{% endif %}>PIX</option>
+                      <option value="CC" {% if "CC" == ag.forma_pagamento %}selected{% endif %}>Cartão de Crédito</option>
+                      <option value="CD" {% if "CD" == ag.forma_pagamento %}selected{% endif %}>Cartão de Débito</option>
+                      <option value="PS" {% if "PS" == ag.forma_pagamento %}selected{% endif %}>Plano de Saúde</option>
                     </select>
                   </div>
                   <div class="mb-3">
@@ -236,5 +247,23 @@
   }
 
   document.getElementById('filtroStatus')?.addEventListener('change', aplicarFiltroStatus);
+
+  // Script para exibir/esconder campos de pagamento no modal
+  document.querySelectorAll('.status-select').forEach(select => {
+    select.addEventListener('change', function() {
+      const targetId = this.getAttribute('data-target');
+      const divFormaPgto = document.getElementById(targetId);
+      const selectFormaPgto = divFormaPgto.querySelector('select[name="forma_pagamento"]');
+
+      if (this.value === 'FI') {
+        divFormaPgto.style.display = 'block';
+        selectFormaPgto.setAttribute('required', 'required');
+      } else {
+        divFormaPgto.style.display = 'none';
+        selectFormaPgto.removeAttribute('required');
+        selectFormaPgto.value = '';
+      }
+    });
+  });
 </script>
 {% endblock %}

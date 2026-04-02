@@ -403,6 +403,12 @@ def editar_agendamento(request, agendamento_id):
     if status in dict(Agendamento.STATUS_CHOICES):
         agendamento.status = status
 
+    forma_pagamento = request.POST.get("forma_pagamento")
+    if forma_pagamento in dict(Agendamento.FORMA_PAGAMENTO_CHOICES):
+        agendamento.forma_pagamento = forma_pagamento
+    else:
+        agendamento.forma_pagamento = None
+
     agendamento.observacao = request.POST.get("observacao", "")
     agendamento.save()
 
@@ -728,14 +734,16 @@ def financeiro_medico_detalhe(request, pk):
         writer = csv.writer(response, delimiter=';')
         
         # Cabeçalho CSV
-        writer.writerow(['Data', 'Hora', 'Paciente', 'Especialidade', 'Valor Cobrado (R$)', 'Repasse Médico (R$)', 'Parte Clínica (R$)'])
+        writer.writerow(['Data', 'Hora', 'Paciente', 'Especialidade', 'Pagamento', 'Valor Cobrado (R$)', 'Repasse Médico (R$)', 'Parte Clínica (R$)'])
         
         for a in agendamentos:
+            forma_pgto = a.get_forma_pagamento_display() if a.forma_pagamento else 'N/A'
             writer.writerow([
                 a.data_agendamento.strftime('%d/%m/%Y'),
                 a.hora_agendamento.strftime('%H:%M'),
                 a.paciente.nome,
                 a.especialidade.nome if a.especialidade else 'N/A',
+                forma_pgto,
                 f'{a.valor_consulta:.2f}' if a.valor_consulta else '0.00',
                 f'{a.valor_medico:.2f}' if a.valor_medico else '0.00',
                 f'{a.valor_clinica:.2f}' if a.valor_clinica else '0.00'
@@ -743,7 +751,7 @@ def financeiro_medico_detalhe(request, pk):
             
         # Linha de Totais no CSV
         writer.writerow([])
-        writer.writerow(['TOTAL', f'{total_atendimentos} atendimentos', '', '', f'{total_gerado:.2f}', f'{total_medico:.2f}', f'{total_clinica:.2f}'])
+        writer.writerow(['TOTAL', f'{total_atendimentos} atendimentos', '', '', '', f'{total_gerado:.2f}', f'{total_medico:.2f}', f'{total_clinica:.2f}'])
         
         return response
 
