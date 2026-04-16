@@ -2,6 +2,46 @@
 
 Sistema completo para a gestão de clínicas médicas, permitindo o cadastro de pacientes, médicos, controle de agendamentos e gestão financeira.
 
+
+## ⚙️ Funcionalidades
+
+- CRUD completo de pacientes  
+- CRUD completo de médicos  
+- Sistema de agendamento de consultas com controle de status  
+- Envio de notificações automatizadas via WhatsApp  
+- Dashboard com indicadores operacionais e financeiros  
+- Envio de notificações automatizadas via WhatsApp  
+- Módulo financeiro com cálculo de repasse médico  
+- Geração de relatórios imprimíveis  
+- Script para geração de dados fictícios  
+
+---
+
+## 🧱 Arquitetura
+
+A aplicação foi desenvolvida utilizando o padrão **MTV (Model-Template-View)** do Django, garantindo uma separação clara de responsabilidades entre as camadas do sistema.
+
+- **Models:** Responsáveis pela estrutura e regras de negócio dos dados  
+- **Views:** Responsáveis pela lógica da aplicação e integração entre frontend e backend  
+- **Templates:** Responsáveis pela renderização das interfaces  
+
+---
+
+
+## 🛠️ Tecnologias Utilizadas
+
+- Python  
+- Django  
+- PostgreSQL (Supabase)  
+- HTML / CSS  
+- JavaScript  
+- Git / GitHub  
+- Integração com API de CEP (busca automática de endereço)  
+
+---
+
+
+
 ## 🚀 Como Rodar o Projeto
 
 Siga o passo a passo abaixo para configurar e executar o sistema localmente:
